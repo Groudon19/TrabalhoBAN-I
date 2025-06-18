@@ -58,8 +58,7 @@ public class Post {
 
     @Override
     public String toString() {
-        return "post [id_post=" + id_post + ", id_usuario=" + id_usuario + ", data_hora=" + data_hora + ", legenda="
-                + legenda + "]";
+        return id_post + " - " + id_usuario + " - " + data_hora + " - " + legenda;
     }
 
     @Override

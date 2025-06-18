@@ -65,10 +65,12 @@ public class Main {
                             case 2:
                                 // Chamar método para mostrar posts
                                 System.out.println("Mostrar Posts");
+                                mostraPosts();
                                 break;
                             case 3:
                                 // Chamar método para excluir post
                                 System.out.println("Excluir Post");
+                                deletePost();
                                 break;
                             case 0:
                                 System.out.println("Voltando ao menu principal...");
@@ -272,4 +274,17 @@ public class Main {
         sistema.inserePost(post);
     }
 
+    public static void deletePost() throws SQLException, ClassNotFoundException, DeleteException, SelectException {
+        mostraPosts();
+        System.out.println("Digite o ID do post a ser excluído:");
+        int id = Integer.parseInt(scan.nextLine());
+        sistema.removePost(id);
+    }
+
+    public static void mostraPosts() throws SQLException, ClassNotFoundException, SelectException {
+        System.out.println("Id - Usuario - Data/Hora - Legenda");
+        for (Post post : sistema.mostraPosts()) {
+            System.out.println(post);
+        }
+    }
 }

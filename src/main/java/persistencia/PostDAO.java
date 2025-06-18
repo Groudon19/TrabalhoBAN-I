@@ -2,19 +2,28 @@ package persistencia;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 
 import dados.Post;
+import excecoes.DeleteException;
 import excecoes.InsertException;
+import excecoes.SelectException;
 
 public class PostDAO {
     private static PostDAO instance = null;
 
     private PreparedStatement insert;
+    private PreparedStatement delete;
+    private PreparedStatement show;
 
     private PostDAO() throws ClassNotFoundException, SQLException {
         Connection conexao = Conexao.getConexao();
         insert = conexao.prepareStatement("INSERT INTO post (id_usuario, data_hora, legenda) VALUES (?, ?, ?)");
+        delete = conexao.prepareStatement("DELETE FROM post WHERE id_post = ?");
+        show = conexao.prepareStatement("SELECT * FROM post");
     }
 
     public static PostDAO getInstance() throws ClassNotFoundException, SQLException {
@@ -39,6 +48,44 @@ public class PostDAO {
             insert.executeUpdate();
         }catch (SQLException e) {
             throw new InsertException("Erro ao publicar o post");
+        }
+    }
+
+    public void delete(int id) throws SQLException, ClassNotFoundException, DeleteException {
+        try {
+            if (delete == null) {
+                new PostDAO();
+            }
+            delete.setInt(1, id);
+            delete.executeUpdate();
+        } catch (SQLException e) {
+            throw new DeleteException("Erro ao deletar o post");
+        }
+    }
+
+    public List<Post> show() throws SQLException, ClassNotFoundException, SelectException {
+        try {
+            if (show == null) {
+                new PostDAO();
+            }
+            show.executeQuery();
+            List<Post> posts = new LinkedList<Post>();
+            ResultSet rs = show.getResultSet();
+            while (rs.next()) {
+                Post post = new Post();
+                post.setId_post(rs.getInt("id_post"));
+                post.setId_usuario(rs.getInt("id_usuario"));
+                post.setData_hora(rs.getTimestamp("data_hora"));
+                if(rs.getString("legenda") != null) {
+                    post.setLegenda(rs.getString("legenda"));
+                } else {
+                    post.setLegenda("[null]");
+                }
+                posts.add(post);
+            }
+            return posts;
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao mostrar os posts");
         }
     }
 }

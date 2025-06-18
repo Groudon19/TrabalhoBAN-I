@@ -37,5 +37,13 @@ public class Sistema {
     public void inserePost(Post post) throws SQLException, ClassNotFoundException, InsertException {
         postDAO.insert(post);
     }
+
+    public void removePost(int id) throws SQLException, ClassNotFoundException, DeleteException {
+        postDAO.delete(id);
+    }
+
+    public List<Post> mostraPosts() throws SQLException, ClassNotFoundException, SelectException {
+        return postDAO.show();
+    }
     
 }
