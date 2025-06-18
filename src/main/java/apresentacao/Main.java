@@ -6,7 +6,11 @@ import java.util.Scanner;
 import dados.Usuario;
 import excecoes.DeleteException;
 import excecoes.InsertException;
+import excecoes.SelectException;
 import negocio.FuncaoUsuario;
+
+// TODO: Mensagem de erro para usuário não encontrado ao excluir
+// TODO: Mensagem de erro para usuário já cadastrado ao cadastrar
 
 public class Main {
     private static Scanner scan = new Scanner(System.in);
@@ -34,12 +38,9 @@ public class Main {
                             case 2:
                                 // Chamar método para mostrar usuários
                                 System.out.println("Mostrar Usuários");
+                                mostraUsuarios();
                                 break;
                             case 3:
-                                // Chamar método para buscar usuário
-                                System.out.println("Buscar Usuário");
-                                break;
-                            case 4:
                                 // Chamar método para excluir usuário
                                 System.out.println("Excluir Usuário");
                                 deleteUsuario();
@@ -63,10 +64,6 @@ public class Main {
                                 System.out.println("Mostrar Posts");
                                 break;
                             case 3:
-                                // Chamar método para buscar post
-                                System.out.println("Buscar Post");
-                                break;
-                            case 4:
                                 // Chamar método para excluir post
                                 System.out.println("Excluir Post");
                                 break;
@@ -90,10 +87,6 @@ public class Main {
                                 System.out.println("Mostrar Mídias");
                                 break;
                             case 3:
-                                // Chamar método para buscar mídia
-                                System.out.println("Buscar Mídia");
-                                break;
-                            case 4:
                                 // Chamar método para excluir mídia
                                 System.out.println("Excluir Mídia");
                                 break;
@@ -116,10 +109,6 @@ public class Main {
                                 System.out.println("Mostrar Mensagens");
                                 break;
                             case 3:
-                                // Chamar método para buscar mensagem
-                                System.out.println("Buscar Mensagem");
-                                break;
-                            case 4:
                                 // Chamar método para excluir mensagem
                                 System.out.println("Excluir Mensagem");
                                 break;
@@ -143,10 +132,6 @@ public class Main {
                                 System.out.println("Mostrar Conversas");
                                 break;
                             case 3:
-                                // Chamar método para buscar conversa
-                                System.out.println("Buscar Conversa");
-                                break;
-                            case 4:
                                 // Chamar método para excluir conversa
                                 System.out.println("Excluir Conversa");
                                 break;
@@ -166,14 +151,15 @@ public class Main {
                 }
             } while (opcao != 0);
             System.out.println("Programa encerrado.");
-        }catch(SQLException | ClassNotFoundException | InsertException | DeleteException e){
-            System.out.println("Erro ao conectar com o banco de dados: " + e.getMessage());
+        }catch(SQLException | ClassNotFoundException | InsertException | DeleteException | SelectException e){
+            e.printStackTrace();
 
         }
 
     }
 
     public static int menu(Scanner scan){
+        System.out.println("-------- Menu Principal --------");
         System.out.println("1 - Usuario");
         System.out.println("2 - Post");
         System.out.println("3 - Midia");
@@ -185,50 +171,50 @@ public class Main {
     }
 
     public static int menuUsuario(Scanner scan){
+        System.out.println("-------- Usuario --------");
         System.out.println("1 - Cadastrar Usuario");
         System.out.println("2 - Mostrar Usuarios");
-        System.out.println("3 - Buscar Usuario");
-        System.out.println("4 - Excluir Usuario");
+        System.out.println("3 - Excluir Usuario");
         System.out.println("0 - Voltar ao Menu Principal");
         System.out.print("Sua opção: ");
         return Integer.parseInt(scan.nextLine());
     }
 
     public static int menuPost(Scanner scan){
+        System.out.println("-------- Post --------");
         System.out.println("1 - Cadastrar Post");
         System.out.println("2 - Mostrar Posts");
-        System.out.println("3 - Buscar Post");
-        System.out.println("4 - Excluir Post");
+        System.out.println("3 - Excluir Post");
         System.out.println("0 - Voltar ao Menu Principal");
         System.out.print("Sua opção: ");
         return Integer.parseInt(scan.nextLine());
     }
 
     public static int menuMidia(Scanner scan){
+        System.out.println("-------- Midia --------");
         System.out.println("1 - Cadastrar Midia");
         System.out.println("2 - Mostrar Midias");
-        System.out.println("3 - Buscar Midia");
-        System.out.println("4 - Excluir Midia"); //estranho
+        System.out.println("3 - Excluir Midia"); //estranho
         System.out.println("0 - Voltar ao Menu Principal");
         System.out.print("Sua opção: ");
         return Integer.parseInt(scan.nextLine());
     }
 
     public static int menuMensagem(Scanner scan){
+        System.out.println("-------- Mensagem --------");
         System.out.println("1 - Cadastrar Mensagem");
         System.out.println("2 - Mostrar Mensagens");
-        System.out.println("3 - Buscar Mensagem");
-        System.out.println("4 - Excluir Mensagem");
+        System.out.println("3 - Excluir Mensagem");
         System.out.println("0 - Voltar ao Menu Principal");
         System.out.print("Sua opção: ");
         return Integer.parseInt(scan.nextLine());
     }   
 
     public static int menuConversa(Scanner scan){
+        System.out.println("-------- Conversa --------");
         System.out.println("1 - Cadastrar Conversa");
         System.out.println("2 - Mostrar Conversas");
-        System.out.println("3 - Buscar Conversa");
-        System.out.println("4 - Excluir Conversa");
+        System.out.println("3 - Excluir Conversa");
         System.out.println("0 - Voltar ao Menu Principal");
         System.out.print("Sua opção: ");
         return Integer.parseInt(scan.nextLine());
@@ -253,10 +239,19 @@ public class Main {
         funcaoUsuario.insereUsuario(usuario);
     }
 
-    public static void deleteUsuario() throws SQLException, ClassNotFoundException, DeleteException {
+    public static void mostraUsuarios() throws SQLException, ClassNotFoundException, SelectException{
+        System.out.println("Id - Nome - Descrição");
+        for (Usuario usuario : funcaoUsuario.mostraUsuarios()) {
+            System.out.println(usuario);
+        }
+    }
+
+    public static void deleteUsuario() throws SQLException, ClassNotFoundException, DeleteException, SelectException {
+        mostraUsuarios();
         System.out.println("Digite o ID do usuário a ser excluído:");
         int id = Integer.parseInt(scan.nextLine());
         
         funcaoUsuario.removeUsuario(id);
     }
+
 }

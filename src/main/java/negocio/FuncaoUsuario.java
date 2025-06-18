@@ -1,10 +1,12 @@
 package negocio;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import dados.Usuario;
 import excecoes.DeleteException;
 import excecoes.InsertException;
+import excecoes.SelectException;
 import persistencia.Conexao;
 import persistencia.UsuarioDAO;
 
@@ -24,5 +26,8 @@ public class FuncaoUsuario {
         usuarioDAO.delete(id);
     }
 
+    public List<Usuario> mostraUsuarios() throws SQLException, ClassNotFoundException, SelectException {
+        return usuarioDAO.show();
+    }
     
 }
