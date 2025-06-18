@@ -7,7 +7,7 @@ import dados.Usuario;
 import excecoes.DeleteException;
 import excecoes.InsertException;
 import excecoes.SelectException;
-import negocio.FuncaoUsuario;
+import negocio.Sistema;
 
 // TODO: Mensagem de erro para usuário não encontrado ao excluir
 // TODO: Mensagem de erro para usuário já cadastrado ao cadastrar
@@ -15,12 +15,12 @@ import negocio.FuncaoUsuario;
 public class Main {
     private static Scanner scan = new Scanner(System.in);
 
-    private static FuncaoUsuario funcaoUsuario;
+    private static Sistema funcaoUsuario;
 
     public static void main(String[] args) {
         
         try{
-            funcaoUsuario = new FuncaoUsuario("Groudon19!");
+            funcaoUsuario = new Sistema("Groudon19!");
 
             System.out.println("Escolha a oopcao:");
             int opcao = -1;
@@ -220,7 +220,7 @@ public class Main {
         return Integer.parseInt(scan.nextLine());
     }
 
-    public static void cadastraUsuario(FuncaoUsuario funcaoUsuario) throws SQLException, ClassNotFoundException, InsertException {
+    public static void cadastraUsuario(Sistema funcaoUsuario) throws SQLException, ClassNotFoundException, InsertException {
         Usuario usuario = new Usuario();
         System.out.println("Digite o nome do usuário:");
         String nome = scan.nextLine();

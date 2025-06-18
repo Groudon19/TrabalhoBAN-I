@@ -10,10 +10,10 @@ import excecoes.SelectException;
 import persistencia.Conexao;
 import persistencia.UsuarioDAO;
 
-public class FuncaoUsuario {
+public class Sistema {
     private UsuarioDAO usuarioDAO;
 
-    public FuncaoUsuario(String senha) throws ClassNotFoundException, SQLException {
+    public Sistema(String senha) throws ClassNotFoundException, SQLException {
         Conexao.setSenha(senha);
         usuarioDAO = UsuarioDAO.getInstance();
     }
