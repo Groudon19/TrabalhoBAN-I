@@ -3,19 +3,23 @@ package negocio;
 import java.sql.SQLException;
 import java.util.List;
 
+import dados.Post;
 import dados.Usuario;
 import excecoes.DeleteException;
 import excecoes.InsertException;
 import excecoes.SelectException;
 import persistencia.Conexao;
+import persistencia.PostDAO;
 import persistencia.UsuarioDAO;
 
 public class Sistema {
     private UsuarioDAO usuarioDAO;
+    private PostDAO postDAO;
 
     public Sistema(String senha) throws ClassNotFoundException, SQLException {
         Conexao.setSenha(senha);
         usuarioDAO = UsuarioDAO.getInstance();
+        postDAO = PostDAO.getInstance();
     }
 
     public void insereUsuario(Usuario usuario) throws InsertException, SQLException, ClassNotFoundException {
@@ -28,6 +32,10 @@ public class Sistema {
 
     public List<Usuario> mostraUsuarios() throws SQLException, ClassNotFoundException, SelectException {
         return usuarioDAO.show();
+    }
+
+    public void inserePost(Post post) throws SQLException, ClassNotFoundException, InsertException {
+        postDAO.insert(post);
     }
     
 }

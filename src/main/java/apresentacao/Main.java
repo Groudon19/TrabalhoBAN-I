@@ -1,8 +1,10 @@
 package apresentacao;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Scanner;
 
+import dados.Post;
 import dados.Usuario;
 import excecoes.DeleteException;
 import excecoes.InsertException;
@@ -15,12 +17,12 @@ import negocio.Sistema;
 public class Main {
     private static Scanner scan = new Scanner(System.in);
 
-    private static Sistema funcaoUsuario;
+    private static Sistema sistema;
 
     public static void main(String[] args) {
         
         try{
-            funcaoUsuario = new Sistema("Groudon19!");
+            sistema = new Sistema("Groudon19!");
 
             System.out.println("Escolha a oopcao:");
             int opcao = -1;
@@ -33,7 +35,7 @@ public class Main {
                             case 1:
                                 // Chamar método para cadastrar usuário
                                 System.out.println("Cadastrar Usuário");
-                                cadastraUsuario(funcaoUsuario);
+                                cadastraUsuario(sistema);
                                 break;
                             case 2:
                                 // Chamar método para mostrar usuários
@@ -57,7 +59,8 @@ public class Main {
                         switch(opcaoPost){
                             case 1:
                                 // Chamar método para cadastrar post
-                                System.out.println("Cadastrar Post");
+                                System.out.println("Publicar Post");
+                                publicaPost(sistema);
                                 break;
                             case 2:
                                 // Chamar método para mostrar posts
@@ -182,7 +185,7 @@ public class Main {
 
     public static int menuPost(Scanner scan){
         System.out.println("-------- Post --------");
-        System.out.println("1 - Cadastrar Post");
+        System.out.println("1 - Publicar Post");
         System.out.println("2 - Mostrar Posts");
         System.out.println("3 - Excluir Post");
         System.out.println("0 - Voltar ao Menu Principal");
@@ -220,7 +223,7 @@ public class Main {
         return Integer.parseInt(scan.nextLine());
     }
 
-    public static void cadastraUsuario(Sistema funcaoUsuario) throws SQLException, ClassNotFoundException, InsertException {
+    public static void cadastraUsuario(Sistema sistema) throws SQLException, ClassNotFoundException, InsertException {
         Usuario usuario = new Usuario();
         System.out.println("Digite o nome do usuário:");
         String nome = scan.nextLine();
@@ -236,12 +239,12 @@ public class Main {
         usuario.setSenha(senha); 
         usuario.setDescricao(descricao);
 
-        funcaoUsuario.insereUsuario(usuario);
+        sistema.insereUsuario(usuario);
     }
 
     public static void mostraUsuarios() throws SQLException, ClassNotFoundException, SelectException{
         System.out.println("Id - Nome - Descrição");
-        for (Usuario usuario : funcaoUsuario.mostraUsuarios()) {
+        for (Usuario usuario : sistema.mostraUsuarios()) {
             System.out.println(usuario);
         }
     }
@@ -251,7 +254,22 @@ public class Main {
         System.out.println("Digite o ID do usuário a ser excluído:");
         int id = Integer.parseInt(scan.nextLine());
         
-        funcaoUsuario.removeUsuario(id);
+        sistema.removeUsuario(id);
+    }
+
+    public static void publicaPost(Sistema sistema) throws SQLException, ClassNotFoundException, InsertException, SelectException {
+        Post post = new Post();
+        mostraUsuarios();
+        System.out.println("Digite o ID do usuário que está publicando:");
+        int id_usuario = Integer.parseInt(scan.nextLine());
+        System.out.println("Digite a legenda do post (opcional):");
+        String legenda = scan.nextLine();
+
+        post.setId_usuario(id_usuario);
+        post.setData_hora(new Timestamp(System.currentTimeMillis()));
+        post.setLegenda(legenda);
+
+        sistema.inserePost(post);
     }
 
 }

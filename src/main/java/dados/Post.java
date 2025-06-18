@@ -1,19 +1,21 @@
 package dados;
 
+import java.sql.Timestamp;
+
 public class Post {
     private int id_post;
     private int id_usuario;
-    private String data_hora;
+    private Timestamp data_hora;
     private String legenda;
 
-    public Post(int id_post, int id_usuario, String data_hora, String legenda) {
+    public Post(int id_post, int id_usuario, Timestamp data_hora, String legenda) {
         this.id_post = id_post;
         this.id_usuario = id_usuario;
         this.data_hora = data_hora;
         this.legenda = legenda;
     }
 
-    public Post(int id_post, int id_usuario, String data_hora) {
+    public Post(int id_post, int id_usuario, Timestamp data_hora) {
         this.id_post = id_post;
         this.id_usuario = id_usuario;
         this.data_hora = data_hora;
@@ -38,11 +40,11 @@ public class Post {
         this.id_usuario = id_usuario;
     }
 
-    public String getData_hora() {
+    public Timestamp getData_hora() {
         return data_hora;
     }
 
-    public void setData_hora(String data_hora) {
+    public void setData_hora(Timestamp data_hora) {
         this.data_hora = data_hora;
     }
 
