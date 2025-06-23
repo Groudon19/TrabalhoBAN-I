@@ -15,6 +15,8 @@ import negocio.Sistema;
 
 // TODO: Mensagem de erro para usuário não encontrado ao excluir
 // TODO: Mensagem de erro para usuário já cadastrado ao cadastrar
+// TODO: Uma opção para listar o resultado de uma consulta que envolva uma junção entre duas tabelas: Mensagens na conversa
+// TODO: Uma opção para listar o resultado de uma consulta que envolva subconsulta(s) e uma ou mais funções de agregação: Usuario com mais seguidores
 
 public class Main {
     private static Scanner scan = new Scanner(System.in);
@@ -122,6 +124,7 @@ public class Main {
                             case 3:
                                 // Chamar método para excluir mensagem
                                 System.out.println("Excluir Mensagem");
+                                removeMensagem();
                                 break;
                             case 0:
                                 System.out.println("Voltando ao menu principal...");
@@ -368,4 +371,12 @@ public class Main {
 
         sistema.insereMensagem(mensagem);
     }
+
+    public static void removeMensagem() throws SQLException, ClassNotFoundException, DeleteException {
+        System.out.println("Digite o ID da mensagem a ser excluída:");
+        int id_mensagem = Integer.parseInt(scan.nextLine());
+        sistema.removeMensagem(id_mensagem);
+    }
+
+    
 }

@@ -70,5 +70,10 @@ public class Sistema {
     public void insereMensagem(Mensagem mensagem) throws SQLException, ClassNotFoundException, InsertException {
         mensagemDAO.insert(mensagem);
     }
+
+    public void removeMensagem(int id) throws SQLException, ClassNotFoundException, DeleteException {
+        mensagemDAO.delete(id);
+    }
+    
     
 }

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import dados.Mensagem;
+import excecoes.DeleteException;
 
 public class MensagemDAO {
     private static MensagemDAO instance = null;
@@ -39,7 +40,7 @@ public class MensagemDAO {
         }
 
         insert.setInt(3, mensagem.getId_usuario());
-        
+
         if (mensagem.getId_post() == 0) {
             insert.setNull(4, java.sql.Types.INTEGER);
         } else {
@@ -55,5 +56,17 @@ public class MensagemDAO {
         insert.setBoolean(6, mensagem.isEntregue());
         insert.setBoolean(7, mensagem.isVisualizado());
         insert.executeUpdate();
+    }
+
+    public void delete(int id) throws SQLException, ClassNotFoundException, DeleteException {
+        try{
+            if (delete == null) {
+                new MensagemDAO();
+            }
+            delete.setInt(1, id);
+            delete.executeUpdate();
+        } catch (SQLException e) {
+            throw new DeleteException( "Erro ao deletar mensagem");
+        }
     }
 }
