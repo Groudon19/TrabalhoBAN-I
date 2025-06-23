@@ -11,6 +11,7 @@ import excecoes.DeleteException;
 import excecoes.InsertException;
 import excecoes.SelectException;
 import persistencia.Conexao;
+import persistencia.ConversaDAO;
 import persistencia.MensagemDAO;
 import persistencia.MidiaDAO;
 import persistencia.PostDAO;
@@ -21,6 +22,7 @@ public class Sistema {
     private PostDAO postDAO;
     private MidiaDAO midiaDAO;
     private MensagemDAO mensagemDAO;
+    private ConversaDAO conversaDAO;
 
 
     public Sistema(String senha) throws ClassNotFoundException, SQLException {
@@ -29,6 +31,7 @@ public class Sistema {
         postDAO = PostDAO.getInstance();
         midiaDAO = MidiaDAO.getInstance();
         mensagemDAO = MensagemDAO.getInstance();
+        conversaDAO = ConversaDAO.getInstance();
     }
 
     public void insereUsuario(Usuario usuario) throws InsertException, SQLException, ClassNotFoundException {
@@ -77,6 +80,10 @@ public class Sistema {
     
     public List<Mensagem> mostraMensagens() throws SQLException, ClassNotFoundException, SelectException {
         return mensagemDAO.show();
+    }
+
+    public void insereConversa(String nomeConversa) throws SQLException, ClassNotFoundException, SelectException {
+        conversaDAO.inserirConversa(nomeConversa);
     }
     
 }

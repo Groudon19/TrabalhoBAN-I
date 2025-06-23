@@ -8,6 +8,8 @@ import java.util.List;
 
 import dados.Mensagem;
 import excecoes.DeleteException;
+import excecoes.InsertException;
+import excecoes.SelectException;
 
 public class MensagemDAO {
     private static MensagemDAO instance = null;
@@ -30,34 +32,38 @@ public class MensagemDAO {
         return instance;
     }
 
-    public void insert(Mensagem mensagem) throws SQLException, ClassNotFoundException {
-        if (insert == null) {
-            new MensagemDAO();
-        }
-        insert.setTimestamp(1, mensagem.getData_hora());
-        if (mensagem.getTexto() == null || mensagem.getTexto().isEmpty()) {
-            insert.setNull(2, java.sql.Types.VARCHAR);
-        } else {
-            insert.setString(2, mensagem.getTexto());
-        }
+    public void insert(Mensagem mensagem) throws SQLException, ClassNotFoundException, InsertException {
+        try{
+            if (insert == null) {
+                new MensagemDAO();
+            }
+            insert.setTimestamp(1, mensagem.getData_hora());
+            if (mensagem.getTexto() == null || mensagem.getTexto().isEmpty()) {
+                insert.setNull(2, java.sql.Types.VARCHAR);
+            } else {
+                insert.setString(2, mensagem.getTexto());
+            }
 
-        insert.setInt(3, mensagem.getId_usuario());
+            insert.setInt(3, mensagem.getId_usuario());
 
-        if (mensagem.getId_post() == 0) {
-            insert.setNull(4, java.sql.Types.INTEGER);
-        } else {
-            insert.setInt(4, mensagem.getId_post());
+            if (mensagem.getId_post() == 0) {
+                insert.setNull(4, java.sql.Types.INTEGER);
+            } else {
+                insert.setInt(4, mensagem.getId_post());
+            }
+
+            if (mensagem.getId_midia() == 0) {
+                insert.setNull(5, java.sql.Types.INTEGER);
+            } else {
+                insert.setInt(5, mensagem.getId_midia());
+            }
+
+            insert.setBoolean(6, mensagem.isEntregue());
+            insert.setBoolean(7, mensagem.isVisualizado());
+            insert.executeUpdate();
+        } catch (SQLException e) {
+            throw new InsertException("Erro ao inserir mensagem: " + e.getMessage());
         }
-
-        if (mensagem.getId_midia() == 0) {
-            insert.setNull(5, java.sql.Types.INTEGER);
-        } else {
-            insert.setInt(5, mensagem.getId_midia());
-        }
-
-        insert.setBoolean(6, mensagem.isEntregue());
-        insert.setBoolean(7, mensagem.isVisualizado());
-        insert.executeUpdate();
     }
 
     public void delete(int id) throws SQLException, ClassNotFoundException, DeleteException {
@@ -72,41 +78,45 @@ public class MensagemDAO {
         }
     }
 
-    public List<Mensagem> show() throws SQLException, ClassNotFoundException {
-        if (show == null) {
-            new MensagemDAO();
+    public List<Mensagem> show() throws SQLException, ClassNotFoundException, SelectException {
+        try{
+            if (show == null) {
+                new MensagemDAO();
+            }
+            ResultSet rs = show.executeQuery();
+            List<Mensagem> mensagens = new java.util.LinkedList<Mensagem>();
+            while (rs.next()) {
+                Mensagem mensagem = new Mensagem();
+                mensagem.setId_mensagem(rs.getInt("id_mensagem"));
+                mensagem.setData_hora(rs.getTimestamp("data_hora"));
+
+                if(rs.getString("texto") != null) {
+                    mensagem.setTexto(rs.getString("texto"));
+                } else {
+                    mensagem.setTexto("[null]");
+                }
+
+                mensagem.setId_usuario(rs.getInt("id_usuario"));
+
+                if(rs.wasNull()) {
+                    mensagem.setId_post(0);
+                } else {
+                    mensagem.setId_post(rs.getInt("id_post"));
+                }
+
+                if(rs.wasNull()) {
+                    mensagem.setId_midia(0);
+                } else {
+                    mensagem.setId_midia(rs.getInt("id_midia"));
+                }
+
+                mensagem.setEntregue(rs.getBoolean("entregue"));
+                mensagem.setVisualizado(rs.getBoolean("visualizado"));
+                mensagens.add(mensagem);
+            }
+            return mensagens;
+        } catch (SQLException e) {
+            throw new SelectException("Erro ao mostrar mensagens: " + e.getMessage());
         }
-        ResultSet rs = show.executeQuery();
-        List<Mensagem> mensagens = new java.util.LinkedList<Mensagem>();
-        while (rs.next()) {
-            Mensagem mensagem = new Mensagem();
-            mensagem.setId_mensagem(rs.getInt("id_mensagem"));
-            mensagem.setData_hora(rs.getTimestamp("data_hora"));
-
-            if(rs.getString("texto") != null) {
-                mensagem.setTexto(rs.getString("texto"));
-            } else {
-                mensagem.setTexto("[null]");
-            }
-
-            mensagem.setId_usuario(rs.getInt("id_usuario"));
-
-            if(rs.wasNull()) {
-                mensagem.setId_post(0);
-            } else {
-                mensagem.setId_post(rs.getInt("id_post"));
-            }
-
-            if(rs.wasNull()) {
-                mensagem.setId_midia(0);
-            } else {
-                mensagem.setId_midia(rs.getInt("id_midia"));
-            }
-
-            mensagem.setEntregue(rs.getBoolean("entregue"));
-            mensagem.setVisualizado(rs.getBoolean("visualizado"));
-            mensagens.add(mensagem);
-        }
-        return mensagens;
     }
 }

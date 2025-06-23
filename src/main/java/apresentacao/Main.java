@@ -141,6 +141,7 @@ public class Main {
                             case 1:
                                 // Chamar método para cadastrar conversa
                                 System.out.println("Cadastrar Conversa");
+                                criaConversa();
                                 break;
                             case 2:
                                 // Chamar método para mostrar conversas
@@ -385,6 +386,16 @@ public class Main {
         for (Mensagem mensagem : sistema.mostraMensagens()) {
             System.out.println(mensagem);
         }
+    }
+
+    public static void criaConversa() throws SQLException, ClassNotFoundException, InsertException, SelectException {
+        String nomeConversa = "";
+        do{
+            System.out.println("Digite o nome da conversa:");
+            nomeConversa = scan.nextLine();
+        }while(nomeConversa.isEmpty());
+
+        sistema.insereConversa(nomeConversa);
     }
 
 }
