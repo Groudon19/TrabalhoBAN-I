@@ -19,6 +19,7 @@ public class UsuarioDAO {
     private PreparedStatement delete;
     private PreparedStatement show;
     private PreparedStatement follow;
+    private PreparedStatement mostfollowedusersfollowers;
 
     private UsuarioDAO() throws SQLException, ClassNotFoundException{
         Connection conexao = Conexao.getConexao();
@@ -26,6 +27,7 @@ public class UsuarioDAO {
         delete = conexao.prepareStatement("DELETE FROM usuario WHERE id_usuario = ?");
         show = conexao.prepareStatement("SELECT * FROM usuario");
         follow = conexao.prepareStatement("INSERT INTO segue (id_seguidor, id_seguido) VALUES (?,?)");
+        mostfollowedusersfollowers = conexao.prepareStatement("SELECT * FROM usuario WHERE id_usuario = ANY (SELECT s1.id_seguidor FROM segue s1 WHERE s1.id_seguido = (SELECT s2.id_seguido FROM segue s2 GROUP BY s2.id_seguido ORDER BY COUNT (s2.id_seguidor) DESC LIMIT 1));");
     }
 
     public static UsuarioDAO getInstance() throws ClassNotFoundException, SQLException {
@@ -105,6 +107,35 @@ public class UsuarioDAO {
             follow.executeUpdate();
         }catch(SQLException e){
             throw new InsertException("Erro ao seguir");
+        }
+    }
+
+    public List<Usuario> mostFollowedUsersFollowers() throws SQLException, ClassNotFoundException, SelectException{
+        try{
+            if(mostfollowedusersfollowers == null){
+                new UsuarioDAO();
+            }
+
+            ResultSet rs = mostfollowedusersfollowers.executeQuery();
+            List<Usuario> usuarios = new LinkedList<Usuario>();
+
+            while (rs.next()) {
+                Usuario usuario = new Usuario();
+                usuario.setId_usuario(rs.getInt("id_usuario"));
+                usuario.setNome(rs.getString("nome"));
+                usuario.setEmail(rs.getString("email"));
+                usuario.setSenha(rs.getString("senha"));
+                if(rs.getString("descricao") != null){
+                    usuario.setDescricao(rs.getString("descricao"));
+                } else {
+                    usuario.setDescricao("[null]");
+                }
+                usuarios.add(usuario);
+            }
+            return usuarios;
+
+        }catch(SQLException e){
+            throw new SelectException("Erro ao buscar seguidores");
         }
     }
 

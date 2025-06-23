@@ -57,7 +57,8 @@ public class Main {
                                 segueUsuario();
                                 break;
                             case 5:
-                                System.out.println("Consultar seus seguidores");
+                                System.out.println("Mostra seguidores do Usuario mais seguido");
+                                subconsulta();
                                 break; 
                             case 0:
                                 System.out.println("Voltando ao menu principal...");
@@ -269,6 +270,13 @@ public class Main {
     public static void mostraUsuarios() throws SQLException, ClassNotFoundException, SelectException{
         System.out.println("Id - Nome - Descrição");
         for (Usuario usuario : sistema.mostraUsuarios()) {
+            System.out.println(usuario);
+        }
+    }
+
+    public static void subconsulta() throws SQLException, ClassNotFoundException, SelectException{
+        System.out.println("Id - Nome - Descrição");
+        for (Usuario usuario : sistema.subconsulta()) {
             System.out.println(usuario);
         }
     }

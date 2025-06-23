@@ -51,6 +51,10 @@ public class Sistema {
         usuarioDAO.follow(id_seguidor, id_seguido);
     }
 
+    public List<Usuario> subconsulta()throws SQLException, ClassNotFoundException, SelectException{
+        return usuarioDAO.mostFollowedUsersFollowers();
+    }
+
     public void inserePost(Post post) throws SQLException, ClassNotFoundException, InsertException {
         postDAO.insert(post);
     }
