@@ -2,7 +2,9 @@ package persistencia;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import dados.Mensagem;
 import excecoes.DeleteException;
@@ -68,5 +70,43 @@ public class MensagemDAO {
         } catch (SQLException e) {
             throw new DeleteException( "Erro ao deletar mensagem");
         }
+    }
+
+    public List<Mensagem> show() throws SQLException, ClassNotFoundException {
+        if (show == null) {
+            new MensagemDAO();
+        }
+        ResultSet rs = show.executeQuery();
+        List<Mensagem> mensagens = new java.util.LinkedList<Mensagem>();
+        while (rs.next()) {
+            Mensagem mensagem = new Mensagem();
+            mensagem.setId_mensagem(rs.getInt("id_mensagem"));
+            mensagem.setData_hora(rs.getTimestamp("data_hora"));
+
+            if(rs.getString("texto") != null) {
+                mensagem.setTexto(rs.getString("texto"));
+            } else {
+                mensagem.setTexto("[null]");
+            }
+
+            mensagem.setId_usuario(rs.getInt("id_usuario"));
+
+            if(rs.wasNull()) {
+                mensagem.setId_post(0);
+            } else {
+                mensagem.setId_post(rs.getInt("id_post"));
+            }
+
+            if(rs.wasNull()) {
+                mensagem.setId_midia(0);
+            } else {
+                mensagem.setId_midia(rs.getInt("id_midia"));
+            }
+
+            mensagem.setEntregue(rs.getBoolean("entregue"));
+            mensagem.setVisualizado(rs.getBoolean("visualizado"));
+            mensagens.add(mensagem);
+        }
+        return mensagens;
     }
 }

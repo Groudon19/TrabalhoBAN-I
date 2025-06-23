@@ -120,6 +120,7 @@ public class Main {
                             case 2:
                                 // Chamar método para mostrar mensagens
                                 System.out.println("Mostrar Mensagens");
+                                mostraMensagens();
                                 break;
                             case 3:
                                 // Chamar método para excluir mensagem
@@ -357,7 +358,7 @@ public class Main {
         do{
             System.out.println("Digite o texto da mensagem:");
             texto = scan.nextLine();
-        }while((id_post == 0 || id_midia == 0) && texto.isEmpty());
+        }while(id_post == 0 && id_midia == 0 && texto.isEmpty());
 
         Timestamp data_hora = new Timestamp(System.currentTimeMillis());
 
@@ -372,11 +373,18 @@ public class Main {
         sistema.insereMensagem(mensagem);
     }
 
-    public static void removeMensagem() throws SQLException, ClassNotFoundException, DeleteException {
+    public static void removeMensagem() throws SQLException, ClassNotFoundException, DeleteException, SelectException {
+        mostraMensagens();
         System.out.println("Digite o ID da mensagem a ser excluída:");
         int id_mensagem = Integer.parseInt(scan.nextLine());
         sistema.removeMensagem(id_mensagem);
     }
 
-    
+    public static void mostraMensagens() throws SQLException, ClassNotFoundException, SelectException {
+        System.out.println("Id - Usuário - Texto - Data/Hora - Entregue - Visualizado - Post - Midia");
+        for (Mensagem mensagem : sistema.mostraMensagens()) {
+            System.out.println(mensagem);
+        }
+    }
+
 }

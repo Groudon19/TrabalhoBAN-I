@@ -75,5 +75,8 @@ public class Sistema {
         mensagemDAO.delete(id);
     }
     
+    public List<Mensagem> mostraMensagens() throws SQLException, ClassNotFoundException, SelectException {
+        return mensagemDAO.show();
+    }
     
 }

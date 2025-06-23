@@ -108,7 +108,10 @@ public class Mensagem {
 
     @Override
     public String toString() {
-        return "mensagem [data_hora=" + data_hora + ", texto=" + texto + "]";
+        if (id_post == 0 && id_midia == 0) {
+            return id_mensagem + " - " + id_usuario + " - " + texto + " - " + data_hora;
+        }
+        return id_mensagem + " - " + id_usuario + " - " + texto + " - " + data_hora + " - " + id_post + " - " + id_midia;
     }
 
     
