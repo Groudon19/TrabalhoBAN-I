@@ -3,6 +3,7 @@ package negocio;
 import java.sql.SQLException;
 import java.util.List;
 
+import dados.Conversa;
 import dados.Mensagem;
 import dados.Midia;
 import dados.Post;
@@ -82,8 +83,16 @@ public class Sistema {
         return mensagemDAO.show();
     }
 
-    public void insereConversa(String nomeConversa) throws SQLException, ClassNotFoundException, SelectException {
+    public void insereConversa(String nomeConversa) throws SQLException, ClassNotFoundException, InsertException {
         conversaDAO.inserirConversa(nomeConversa);
     }
-    
+
+    public void removeConversa(int id) throws SQLException, ClassNotFoundException, DeleteException {
+        conversaDAO.deleteConversa(id);
+    }
+
+    public List<Conversa> mostraConversas() throws SQLException, ClassNotFoundException, SelectException {
+        return conversaDAO.show();
+    }
+
 }

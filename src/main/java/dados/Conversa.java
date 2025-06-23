@@ -3,7 +3,14 @@ package dados;
 public class Conversa {
     private int id_conversa;
     private String nome_conversa;
-    
+
+    public Conversa(int id_conversa, String nome_conversa){
+        this.id_conversa = id_conversa;
+        this.nome_conversa = nome_conversa;
+    }
+
+    public Conversa(){}
+
     public int getId_conversa() {
         return id_conversa;
     }
@@ -33,7 +40,7 @@ public class Conversa {
     
     @Override
     public String toString() {
-        return "conversa [id_conversa=" + id_conversa + ", nome_conversa=" + nome_conversa + "]";
+        return id_conversa + " - " + nome_conversa;
     }
 
     

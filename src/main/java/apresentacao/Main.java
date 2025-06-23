@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Scanner;
 
+import dados.Conversa;
 import dados.Mensagem;
 import dados.Midia;
 import dados.Post;
@@ -146,10 +147,12 @@ public class Main {
                             case 2:
                                 // Chamar método para mostrar conversas
                                 System.out.println("Mostrar Conversas");
+                                mostraConversas();
                                 break;
                             case 3:
                                 // Chamar método para excluir conversa
                                 System.out.println("Excluir Conversa");
+                                removeConversa();
                                 break;
                             case 0:
                                 System.out.println("Voltando ao menu principal...");
@@ -396,6 +399,20 @@ public class Main {
         }while(nomeConversa.isEmpty());
 
         sistema.insereConversa(nomeConversa);
+    }
+
+    public static void removeConversa() throws SQLException, ClassNotFoundException, DeleteException, SelectException {
+        mostraConversas();
+        System.out.println("Digite o ID da conversa a ser excluída:");
+        int id_conversa = Integer.parseInt(scan.nextLine());
+        sistema.removeConversa(id_conversa);
+    }
+
+    public static void mostraConversas() throws SQLException, ClassNotFoundException, SelectException {
+        System.out.println("Id - Nome");
+        for (Conversa conversa : sistema.mostraConversas()) {
+            System.out.println(conversa);
+        }
     }
 
 }
