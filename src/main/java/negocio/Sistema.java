@@ -47,6 +47,10 @@ public class Sistema {
         return usuarioDAO.show();
     }
 
+    public void segueUsuario(int id_seguidor, int id_seguido) throws SQLException, ClassNotFoundException, InsertException{
+        usuarioDAO.follow(id_seguidor, id_seguido);
+    }
+
     public void inserePost(Post post) throws SQLException, ClassNotFoundException, InsertException {
         postDAO.insert(post);
     }

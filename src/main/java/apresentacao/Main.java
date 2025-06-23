@@ -17,7 +17,7 @@ import negocio.Sistema;
 // TODO: Mensagem de erro para usuário não encontrado ao excluir
 // TODO: Mensagem de erro para usuário já cadastrado ao cadastrar
 // TODO: Uma opção para listar o resultado de uma consulta que envolva uma junção entre duas tabelas: Mensagens na conversa
-// TODO: Uma opção para listar o resultado de uma consulta que envolva subconsulta(s) e uma ou mais funções de agregação: Usuario com mais seguidores
+// TODO: Uma opção para listar o resultado de uma consulta que envolva subconsulta(s) e uma ou mais funções de agregação: Num de seg de um usuario
 
 public class Main {
     private static Scanner scan = new Scanner(System.in);
@@ -52,6 +52,13 @@ public class Main {
                                 System.out.println("Excluir Usuário");
                                 deleteUsuario();
                                 break;
+                            case 4:
+                                System.out.println("Seguir Usuário");
+                                segueUsuario();
+                                break;
+                            case 5:
+                                System.out.println("Consultar seus seguidores");
+                                break; 
                             case 0:
                                 System.out.println("Voltando ao menu principal...");
                                 break;
@@ -194,6 +201,7 @@ public class Main {
         System.out.println("1 - Cadastrar Usuario");
         System.out.println("2 - Mostrar Usuarios");
         System.out.println("3 - Excluir Usuario");
+        System.out.println("4 - Seguir Usuario");
         System.out.println("0 - Voltar ao Menu Principal");
         System.out.print("Sua opção: ");
         return Integer.parseInt(scan.nextLine());
@@ -263,6 +271,21 @@ public class Main {
         for (Usuario usuario : sistema.mostraUsuarios()) {
             System.out.println(usuario);
         }
+    }
+
+    public static void segueUsuario()throws SQLException, ClassNotFoundException, InsertException, SelectException {
+        int id_seguidor = 0;
+        int id_seguido = 0;
+        do{
+            mostraUsuarios();
+            System.out.println("Digite o seu ID de usuario:");
+            id_seguidor = Integer.parseInt(scan.nextLine());
+            mostraUsuarios();
+            System.out.println("Digite o ID do usuario que quer seguir:");
+            id_seguido = Integer.parseInt(scan.nextLine());
+        }while(id_seguidor == id_seguido || id_seguidor == 0 || id_seguido == 0);
+
+        sistema.segueUsuario(id_seguidor, id_seguido);
     }
 
     public static void deleteUsuario() throws SQLException, ClassNotFoundException, DeleteException, SelectException {

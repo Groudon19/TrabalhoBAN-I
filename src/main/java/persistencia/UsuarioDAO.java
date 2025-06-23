@@ -18,12 +18,14 @@ public class UsuarioDAO {
     private PreparedStatement insert;
     private PreparedStatement delete;
     private PreparedStatement show;
+    private PreparedStatement follow;
 
     private UsuarioDAO() throws SQLException, ClassNotFoundException{
         Connection conexao = Conexao.getConexao();
         insert = conexao.prepareStatement("INSERT INTO usuario (nome, senha, descricao, email) VALUES (?, ?, ?, ?)");
         delete = conexao.prepareStatement("DELETE FROM usuario WHERE id_usuario = ?");
         show = conexao.prepareStatement("SELECT * FROM usuario");
+        follow = conexao.prepareStatement("INSERT INTO segue (id_seguidor, id_seguido) VALUES (?,?)");
     }
 
     public static UsuarioDAO getInstance() throws ClassNotFoundException, SQLException {
@@ -88,6 +90,21 @@ public class UsuarioDAO {
             return usuarios;
         }catch(SQLException e){
             throw new SelectException("Erro ao buscar usuarios");
+        }
+    }
+
+    public void follow(int id_seguidor, int id_seguido) throws SQLException, ClassNotFoundException, InsertException{
+        try{
+            if (follow == null){
+                new UsuarioDAO();
+            }
+
+            follow.setInt(1, id_seguidor);
+            follow.setInt(2, id_seguido);
+
+            follow.executeUpdate();
+        }catch(SQLException e){
+            throw new InsertException("Erro ao seguir");
         }
     }
 
