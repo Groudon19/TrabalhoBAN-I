@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Scanner;
 
+import dados.Midia;
 import dados.Post;
 import dados.Usuario;
 import excecoes.DeleteException;
@@ -85,15 +86,18 @@ public class Main {
                         switch(opcaoMidia){
                             case 1:
                                 // Chamar método para cadastrar mídia
-                                System.out.println("Cadastrar Mídia");
+                                System.out.println("Publica Mídia");
+                                publicaMidia(sistema);
                                 break;
                             case 2:
                                 // Chamar método para mostrar mídias
                                 System.out.println("Mostrar Mídias");
+                                mostraMidias();
                                 break;
                             case 3:
                                 // Chamar método para excluir mídia
                                 System.out.println("Excluir Mídia");
+                                deleteMidia();
                                 break;
                             case 0:
                                 System.out.println("Voltando ao menu principal...");
@@ -197,7 +201,7 @@ public class Main {
 
     public static int menuMidia(Scanner scan){
         System.out.println("-------- Midia --------");
-        System.out.println("1 - Cadastrar Midia");
+        System.out.println("1 - Publica Midia");
         System.out.println("2 - Mostrar Midias");
         System.out.println("3 - Excluir Midia"); //estranho
         System.out.println("0 - Voltar ao Menu Principal");
@@ -285,6 +289,41 @@ public class Main {
         System.out.println("Id - Usuario - Data/Hora - Legenda");
         for (Post post : sistema.mostraPosts()) {
             System.out.println(post);
+        }
+    }
+
+    public static void publicaMidia(Sistema sistema) throws SQLException, ClassNotFoundException, InsertException, SelectException {
+        Midia midia = new Midia();
+        System.out.println("Digite o tamanho da mídia:");
+        int tamanho = Integer.parseInt(scan.nextLine());
+        System.out.println("Digite o tipo da mídia (1 para imagem, 2 para vídeo):");
+        int tipo = Integer.parseInt(scan.nextLine());
+        int duracao = 0;
+        if(tipo == 2) {
+            System.out.println("Digite a duração da mídia (em segundos, opcional):");
+            String duracaoInput = scan.nextLine();
+            if (!duracaoInput.isEmpty()) {
+                duracao = Integer.parseInt(duracaoInput);
+            }
+        }
+        midia.setTamanho(tamanho);
+        midia.setTipo(tipo);
+        midia.setDuracao(duracao);
+
+        sistema.insereMidia(midia);
+    }
+
+    public static void deleteMidia() throws SQLException, ClassNotFoundException, DeleteException, SelectException {
+        mostraMidias();
+        System.out.println("Digite o ID da mídia a ser excluída:");
+        int id = Integer.parseInt(scan.nextLine());
+        sistema.removeMidia(id);
+    }
+
+    public static void mostraMidias() throws SQLException, ClassNotFoundException, SelectException {
+        System.out.println("Id - Tamanho - Tipo - (Duração)");
+        for (Midia midia : sistema.mostraMidias()) {
+            System.out.println(midia);
         }
     }
 }

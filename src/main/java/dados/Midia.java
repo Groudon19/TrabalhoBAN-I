@@ -49,7 +49,11 @@ public class Midia {
     
     @Override
     public String toString() {
-        return "midia [id_midia=" + id_midia + ", tamanho=" + tamanho + ", tipo=" + tipo + ", duracao=" + duracao + "]";
+        if(tipo == 2){
+            return id_midia + " - " + tamanho + " - Video - " + duracao/60 + "min e " + duracao%60 + "seg";
+        }else {
+            return id_midia + " - " + tamanho + " - Imagem";
+        }
     }
 
     @Override
