@@ -1,8 +1,10 @@
 package dados;
 
+import java.sql.Timestamp;
+
 public class Mensagem {
     private int id_mensagem;
-    private String data_hora;
+    private Timestamp data_hora;
     private String texto;
     private int id_usuario;
     private int id_post;
@@ -10,7 +12,7 @@ public class Mensagem {
     private boolean entregue;
     private boolean visualizado;
 
-    public Mensagem(int id_mensagem, String data_hora, String texto, int id_usuario, int id_post, int id_midia, boolean entregue, boolean visualizado) {
+    public Mensagem(int id_mensagem, Timestamp data_hora, String texto, int id_usuario, int id_post, int id_midia, boolean entregue, boolean visualizado) {
         this.id_mensagem = id_mensagem;
         this.data_hora = data_hora;
         this.texto = texto;
@@ -33,11 +35,11 @@ public class Mensagem {
         this.id_mensagem = id_mensagem;
     }
 
-    public String getData_hora() {
+    public Timestamp getData_hora() {
         return data_hora;
     }
 
-    public void setData_hora(String data_hora) {
+    public void setData_hora(Timestamp data_hora) {
         this.data_hora = data_hora;
     }
 

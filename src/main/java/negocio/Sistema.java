@@ -3,6 +3,7 @@ package negocio;
 import java.sql.SQLException;
 import java.util.List;
 
+import dados.Mensagem;
 import dados.Midia;
 import dados.Post;
 import dados.Usuario;
@@ -10,6 +11,7 @@ import excecoes.DeleteException;
 import excecoes.InsertException;
 import excecoes.SelectException;
 import persistencia.Conexao;
+import persistencia.MensagemDAO;
 import persistencia.MidiaDAO;
 import persistencia.PostDAO;
 import persistencia.UsuarioDAO;
@@ -18,6 +20,7 @@ public class Sistema {
     private UsuarioDAO usuarioDAO;
     private PostDAO postDAO;
     private MidiaDAO midiaDAO;
+    private MensagemDAO mensagemDAO;
 
 
     public Sistema(String senha) throws ClassNotFoundException, SQLException {
@@ -25,6 +28,7 @@ public class Sistema {
         usuarioDAO = UsuarioDAO.getInstance();
         postDAO = PostDAO.getInstance();
         midiaDAO = MidiaDAO.getInstance();
+        mensagemDAO = MensagemDAO.getInstance();
     }
 
     public void insereUsuario(Usuario usuario) throws InsertException, SQLException, ClassNotFoundException {
@@ -61,6 +65,10 @@ public class Sistema {
 
     public List<Midia> mostraMidias() throws SQLException, ClassNotFoundException, SelectException {
         return midiaDAO.show();
+    }
+
+    public void insereMensagem(Mensagem mensagem) throws SQLException, ClassNotFoundException, InsertException {
+        mensagemDAO.insert(mensagem);
     }
     
 }

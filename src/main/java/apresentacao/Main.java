@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Scanner;
 
+import dados.Mensagem;
 import dados.Midia;
 import dados.Post;
 import dados.Usuario;
@@ -111,7 +112,8 @@ public class Main {
                         switch(opcaoMensagem){
                             case 1:
                                 // Chamar método para cadastrar mensagem
-                                System.out.println("Cadastrar Mensagem");
+                                System.out.println("Mandar Mensagem");
+                                mandaMensagem();
                                 break;
                             case 2:
                                 // Chamar método para mostrar mensagens
@@ -325,5 +327,45 @@ public class Main {
         for (Midia midia : sistema.mostraMidias()) {
             System.out.println(midia);
         }
+    }
+
+    public static void mandaMensagem() throws SQLException, ClassNotFoundException, InsertException, SelectException {
+        Mensagem mensagem = new Mensagem();
+        System.out.println("Digite o ID do usuário que está enviando a mensagem:");
+        int id_usuario = Integer.parseInt(scan.nextLine());
+
+        int id_post = 0;
+        int id_midia = 0;
+        System.out.println("Digite o ID do post relacionado (opcional):");
+        String id_post_input = scan.nextLine();
+        if (!id_post_input.isEmpty()) {
+            id_post = Integer.parseInt(id_post_input);
+        }
+
+        if(id_post == 0){
+            System.out.println("Digite o ID da mídia relacionada (opcional):");
+            String id_midia_input = scan.nextLine();
+            if (!id_midia_input.isEmpty()) {
+                id_midia = Integer.parseInt(id_midia_input);
+            }
+        }
+
+        String texto = "";
+        do{
+            System.out.println("Digite o texto da mensagem:");
+            texto = scan.nextLine();
+        }while((id_post == 0 || id_midia == 0) && texto.isEmpty());
+
+        Timestamp data_hora = new Timestamp(System.currentTimeMillis());
+
+        mensagem.setId_usuario(id_usuario);
+        mensagem.setId_post(id_post);
+        mensagem.setId_midia(id_midia);
+        mensagem.setTexto(texto);
+        mensagem.setData_hora(data_hora);
+        mensagem.setEntregue(true);
+        mensagem.setVisualizado(false);
+
+        sistema.insereMensagem(mensagem);
     }
 }
