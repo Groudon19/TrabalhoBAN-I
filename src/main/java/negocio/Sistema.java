@@ -103,4 +103,8 @@ public class Sistema {
         return conversaDAO.show();
     }
 
+    public List<Mensagem> mostraConteudoDaConversa(int id_conversa) throws SQLException, ClassNotFoundException, SelectException {
+        return conversaDAO.showConversa(id_conversa);
+    }
+
 }

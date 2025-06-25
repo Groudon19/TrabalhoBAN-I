@@ -5,9 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import dados.Conversa;
+import dados.Mensagem;
 import excecoes.DeleteException;
 import excecoes.InsertException;
 import excecoes.SelectException;
@@ -16,7 +18,9 @@ public class ConversaDAO {
     private static ConversaDAO instancia;  
     PreparedStatement insert;
     PreparedStatement delete;
-    PreparedStatement show; 
+    PreparedStatement show;
+    PreparedStatement showConversa;
+
 
     private ConversaDAO() throws ClassNotFoundException, SQLException {
         // Construtor privado para evitar instanciamento externo
@@ -24,7 +28,7 @@ public class ConversaDAO {
         insert = conexao.prepareStatement("INSERT INTO conversa (nome_conversa) VALUES (?)");
         delete = conexao.prepareStatement("DELETE FROM conversa WHERE id_conversa = ?");
         show = conexao.prepareStatement("SELECT * FROM conversa");
-        
+        showConversa = conexao.prepareStatement("SELECT m.* FROM recebe r, mensagem m WHERE ? = r.id_conversa AND m.id_mensagem = r.id_mensagem ORDER BY m.data_hora;");
     }
 
     public static ConversaDAO getInstance() throws ClassNotFoundException, SQLException {
@@ -79,5 +83,51 @@ public class ConversaDAO {
             throw new SelectException("Erro ao mostrar conversas: " + e.getMessage());
         }
         return conversas;
+    }
+
+    public List<Mensagem> showConversa(int id_conversa) throws SQLException, ClassNotFoundException, SelectException {
+        try{
+            if(showConversa == null){
+                new ConversaDAO();
+            }
+
+            showConversa.setInt(1, id_conversa);
+            ResultSet rs = showConversa.executeQuery();
+
+            List<Mensagem> mensagens = new LinkedList<Mensagem>();
+
+            while(rs.next()){
+                Mensagem mensagem = new Mensagem();
+                mensagem.setId_mensagem(rs.getInt("id_mensagem"));
+                mensagem.setData_hora(rs.getTimestamp("data_hora"));
+
+                if(rs.getString("texto") != null) {
+                    mensagem.setTexto(rs.getString("texto"));
+                } else {
+                    mensagem.setTexto("[null]");
+                }
+
+                mensagem.setId_usuario(rs.getInt("id_usuario"));
+
+                if(rs.wasNull()) {
+                    mensagem.setId_post(0);
+                } else {
+                    mensagem.setId_post(rs.getInt("id_post"));
+                }
+
+                if(rs.wasNull()) {
+                    mensagem.setId_midia(0);
+                } else {
+                    mensagem.setId_midia(rs.getInt("id_midia"));
+                }
+
+                mensagem.setEntregue(rs.getBoolean("entregue"));
+                mensagem.setVisualizado(rs.getBoolean("visualizado"));
+                mensagens.add(mensagem);
+            }
+            return mensagens;
+        }catch(SQLException e){
+            throw new SelectException("Erro ao mostrar a conversa");
+        }
     }
 }

@@ -162,6 +162,10 @@ public class Main {
                                 System.out.println("Excluir Conversa");
                                 removeConversa();
                                 break;
+                            case 4:
+                                System.out.println("Mostrar uma Conversa");
+                                mostraConteudoDaConversa();
+                                break;
                             case 0:
                                 System.out.println("Voltando ao menu principal...");
                                 break;
@@ -203,6 +207,7 @@ public class Main {
         System.out.println("2 - Mostrar Usuarios");
         System.out.println("3 - Excluir Usuario");
         System.out.println("4 - Seguir Usuario");
+        System.out.println("5 - Mostrar seguidores do usuario mais seguido");
         System.out.println("0 - Voltar ao Menu Principal");
         System.out.print("Sua opção: ");
         return Integer.parseInt(scan.nextLine());
@@ -243,6 +248,7 @@ public class Main {
         System.out.println("1 - Cadastrar Conversa");
         System.out.println("2 - Mostrar Conversas");
         System.out.println("3 - Excluir Conversa");
+        System.out.println("4 - Mostrar conteudo de uma conversa");
         System.out.println("0 - Voltar ao Menu Principal");
         System.out.print("Sua opção: ");
         return Integer.parseInt(scan.nextLine());
@@ -443,6 +449,16 @@ public class Main {
         System.out.println("Id - Nome");
         for (Conversa conversa : sistema.mostraConversas()) {
             System.out.println(conversa);
+        }
+    }
+
+    public static void mostraConteudoDaConversa() throws SQLException, ClassNotFoundException, SelectException{
+        mostraConversas();
+        System.out.println("Digite o ID da conversa:");
+        int id_conversa = Integer.parseInt(scan.nextLine());
+        
+        for(Mensagem m : sistema.mostraConteudoDaConversa(id_conversa)){
+            System.out.println(m);
         }
     }
 
