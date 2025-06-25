@@ -17,12 +17,14 @@ public class MensagemDAO {
     private PreparedStatement insert;
     private PreparedStatement delete;
     private PreparedStatement show;
+    private PreparedStatement receive;
 
     private MensagemDAO() throws ClassNotFoundException, SQLException {
         Connection conexao = Conexao.getConexao();
         insert = conexao.prepareStatement("INSERT INTO mensagem (data_hora, texto, id_usuario, id_post, id_midia, entregue, visualizado) VALUES (?, ?, ?, ?, ?, ?, ?)");
         delete = conexao.prepareStatement("DELETE FROM mensagem WHERE id_mensagem = ?");
         show = conexao.prepareStatement("SELECT * FROM mensagem");
+        receive = conexao.prepareStatement("INSERT INTO recebe (id_conversa, id_mensagem) VALUES (?, (SELECT MAX(id_mensagem) FROM mensagem))");
     }
 
     public static MensagemDAO getInstance() throws ClassNotFoundException, SQLException {
@@ -117,6 +119,19 @@ public class MensagemDAO {
             return mensagens;
         } catch (SQLException e) {
             throw new SelectException("Erro ao mostrar mensagens: " + e.getMessage());
+        }
+    }
+
+    public void receive(int id_conversa) throws SQLException, ClassNotFoundException, InsertException {
+        try {
+            if(receive == null){
+                new MensagemDAO();
+            }
+            receive.setInt(1, id_conversa);
+
+            receive.executeUpdate();
+        } catch (SQLException e) {
+            throw new InsertException("Erro ao receber a mensagem");
         }
     }
 }

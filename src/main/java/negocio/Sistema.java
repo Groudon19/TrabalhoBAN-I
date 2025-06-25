@@ -95,6 +95,10 @@ public class Sistema {
         return mensagemDAO.show();
     }
 
+    public void recebeMensagem(int id_conversa) throws SQLException, ClassNotFoundException, InsertException {
+        mensagemDAO.receive(id_conversa);
+    }
+
     public void insereConversa(String nomeConversa) throws SQLException, ClassNotFoundException, InsertException {
         conversaDAO.inserirConversa(nomeConversa);
     }

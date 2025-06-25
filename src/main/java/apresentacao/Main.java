@@ -437,7 +437,7 @@ public class Main {
         mensagem.setVisualizado(false);
 
         sistema.insereMensagem(mensagem);
-        
+        sistema.recebeMensagem(id_conversa);
     }
 
     public static void removeMensagem() throws SQLException, ClassNotFoundException, DeleteException, SelectException {
