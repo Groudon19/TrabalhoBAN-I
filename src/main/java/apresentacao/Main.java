@@ -57,6 +57,10 @@ public class Main {
                                 segueUsuario();
                                 break;
                             case 5:
+                                System.out.println("Curtir Post");
+                                curtePost();
+                                break;
+                            case 6:
                                 System.out.println("Mostra seguidores do Usuario mais seguido");
                                 subconsulta();
                                 break; 
@@ -207,7 +211,8 @@ public class Main {
         System.out.println("2 - Mostrar Usuarios");
         System.out.println("3 - Excluir Usuario");
         System.out.println("4 - Seguir Usuario");
-        System.out.println("5 - Mostrar seguidores do usuario mais seguido");
+        System.out.println("5 - Curtir um Post");
+        System.out.println("6 - Mostrar seguidores do usuario mais seguido");
         System.out.println("0 - Voltar ao Menu Principal");
         System.out.print("Sua opção: ");
         return Integer.parseInt(scan.nextLine());
@@ -302,6 +307,22 @@ public class Main {
         sistema.segueUsuario(id_seguidor, id_seguido);
     }
 
+    public static void curtePost() throws SQLException, ClassNotFoundException, InsertException, SelectException {
+        int id_post = 0;
+        int id_usuario = 0;
+
+        do{
+            mostraUsuarios();
+            System.out.println("Digite o seu ID de usuario:");
+            id_usuario = Integer.parseInt(scan.nextLine());
+            mostraPosts();
+            System.out.println("Digite o ID do post que quer curtir:");
+            id_post = Integer.parseInt(scan.nextLine());
+        }while(id_usuario <= 0 || id_post <= 0);
+
+        sistema.curtePost(id_post, id_usuario);
+    }
+
     public static void deleteUsuario() throws SQLException, ClassNotFoundException, DeleteException, SelectException {
         mostraUsuarios();
         System.out.println("Digite o ID do usuário a ser excluído:");
@@ -379,6 +400,10 @@ public class Main {
         System.out.println("Digite o ID do usuário que está enviando a mensagem:");
         int id_usuario = Integer.parseInt(scan.nextLine());
 
+        mostraConversas();
+        System.out.println("Digite o ID da conversa:");
+        int id_conversa = Integer.parseInt(scan.nextLine());
+
         int id_post = 0;
         int id_midia = 0;
         System.out.println("Digite o ID do post relacionado (opcional):");
@@ -412,6 +437,7 @@ public class Main {
         mensagem.setVisualizado(false);
 
         sistema.insereMensagem(mensagem);
+        
     }
 
     public static void removeMensagem() throws SQLException, ClassNotFoundException, DeleteException, SelectException {

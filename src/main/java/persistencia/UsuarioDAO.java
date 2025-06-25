@@ -19,6 +19,7 @@ public class UsuarioDAO {
     private PreparedStatement delete;
     private PreparedStatement show;
     private PreparedStatement follow;
+    private PreparedStatement like;
     private PreparedStatement mostfollowedusersfollowers;
 
     private UsuarioDAO() throws SQLException, ClassNotFoundException{
@@ -27,6 +28,7 @@ public class UsuarioDAO {
         delete = conexao.prepareStatement("DELETE FROM usuario WHERE id_usuario = ?");
         show = conexao.prepareStatement("SELECT * FROM usuario");
         follow = conexao.prepareStatement("INSERT INTO segue (id_seguidor, id_seguido) VALUES (?,?)");
+        like = conexao.prepareStatement("INSERT INTO curte (id_post, id_usuario) VALUES (?, ?)");
         mostfollowedusersfollowers = conexao.prepareStatement("SELECT * FROM usuario WHERE id_usuario = ANY (SELECT s1.id_seguidor FROM segue s1 WHERE s1.id_seguido = (SELECT s2.id_seguido FROM segue s2 GROUP BY s2.id_seguido ORDER BY COUNT (s2.id_seguidor) DESC LIMIT 1));");
     }
 
@@ -64,7 +66,7 @@ public class UsuarioDAO {
             delete.setInt(1, id);
             delete.executeUpdate();
         } catch (SQLException e) {
-            throw new DeleteException("Erro ao deletar o usuario");
+            throw new DeleteException("Usuário não pode ser removido");
         }
     }
 
@@ -107,6 +109,20 @@ public class UsuarioDAO {
             follow.executeUpdate();
         }catch(SQLException e){
             throw new InsertException("Erro ao seguir");
+        }
+    }
+
+    public void like(int id_post, int id_usuario) throws SQLException, ClassNotFoundException, InsertException {
+        try{
+            if(like == null){
+                new UsuarioDAO();
+            }
+            like.setInt(1, id_post);
+            like.setInt(2, id_usuario);
+
+            like.executeUpdate();
+        }catch(SQLException e){
+            throw new InsertException("Erro ao curtir");
         }
     }
 

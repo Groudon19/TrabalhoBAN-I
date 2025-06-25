@@ -51,6 +51,10 @@ public class Sistema {
         usuarioDAO.follow(id_seguidor, id_seguido);
     }
 
+    public void curtePost(int id_post, int id_usuario) throws SQLException, ClassNotFoundException, InsertException {
+        usuarioDAO.like(id_post, id_usuario);
+    }
+
     public List<Usuario> subconsulta()throws SQLException, ClassNotFoundException, SelectException{
         return usuarioDAO.mostFollowedUsersFollowers();
     }
