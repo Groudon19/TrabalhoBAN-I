@@ -89,6 +89,10 @@ public class Main {
                                 System.out.println("Excluir Post");
                                 deletePost();
                                 break;
+                            case 4:
+                                System.out.println("Comentando");
+                                comentaPost();
+                                break;
                             case 0:
                                 System.out.println("Voltando ao menu principal...");
                                 break;
@@ -170,6 +174,10 @@ public class Main {
                                 System.out.println("Mostrar uma Conversa");
                                 mostraConteudoDaConversa();
                                 break;
+                            case 5:
+                                System.out.println("Adicionar um Usuário na Conversa");
+                                adicionarUsuarioNaConversa();
+                                break;
                             case 0:
                                 System.out.println("Voltando ao menu principal...");
                                 break;
@@ -223,6 +231,7 @@ public class Main {
         System.out.println("1 - Publicar Post");
         System.out.println("2 - Mostrar Posts");
         System.out.println("3 - Excluir Post");
+        System.out.println("4 - Fazer um comentario");
         System.out.println("0 - Voltar ao Menu Principal");
         System.out.print("Sua opção: ");
         return Integer.parseInt(scan.nextLine());
@@ -254,6 +263,7 @@ public class Main {
         System.out.println("2 - Mostrar Conversas");
         System.out.println("3 - Excluir Conversa");
         System.out.println("4 - Mostrar conteudo de uma conversa");
+        System.out.println("5 - Adicionar Usuário a uma conversa");
         System.out.println("0 - Voltar ao Menu Principal");
         System.out.print("Sua opção: ");
         return Integer.parseInt(scan.nextLine());
@@ -486,6 +496,32 @@ public class Main {
         for(Mensagem m : sistema.mostraConteudoDaConversa(id_conversa)){
             System.out.println(m);
         }
+    }
+
+    public static void adicionarUsuarioNaConversa() throws SQLException, ClassNotFoundException, InsertException, SelectException {
+        mostraConversas();
+        System.out.println("Digite o ID da conversa:");
+        int id_conversa = Integer.parseInt(scan.nextLine());
+        mostraUsuarios();
+        System.out.println("Digite o ID do usuário que quer adicionar:");
+        int id_usuario = Integer.parseInt(scan.nextLine());
+
+        sistema.participarConversa(id_conversa, id_usuario);
+    }
+
+    public static void comentaPost() throws SQLException, ClassNotFoundException, InsertException, SelectException{
+        mostraUsuarios();
+        System.out.println("Digite o ID do usuario:");
+        int id_usuario = Integer.parseInt(scan.nextLine());
+        mostraPosts();
+        System.out.println("Digite o id do post:");
+        int id_post = Integer.parseInt(scan.nextLine());
+        System.out.println("Conteudo do comentario:");
+        String texto = scan.nextLine();
+        Timestamp data_hora = new Timestamp(System.currentTimeMillis());
+
+        sistema.comentar(id_post, id_usuario, texto, data_hora);
+
     }
 
 }

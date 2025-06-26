@@ -16,10 +16,11 @@ import excecoes.SelectException;
 
 public class ConversaDAO {
     private static ConversaDAO instancia;  
-    PreparedStatement insert;
-    PreparedStatement delete;
-    PreparedStatement show;
-    PreparedStatement showConversa;
+    private PreparedStatement insert;
+    private PreparedStatement delete;
+    private PreparedStatement show;
+    private PreparedStatement participa;
+    private PreparedStatement showConversa;
 
 
     private ConversaDAO() throws ClassNotFoundException, SQLException {
@@ -29,6 +30,7 @@ public class ConversaDAO {
         delete = conexao.prepareStatement("DELETE FROM conversa WHERE id_conversa = ?");
         show = conexao.prepareStatement("SELECT * FROM conversa");
         showConversa = conexao.prepareStatement("SELECT m.* FROM recebe r, mensagem m WHERE ? = r.id_conversa AND m.id_mensagem = r.id_mensagem ORDER BY m.data_hora;");
+        participa = conexao.prepareStatement("INSERT INTO participa (id_conversa, id_usuario) VALUES (?, ?)");
     }
 
     public static ConversaDAO getInstance() throws ClassNotFoundException, SQLException {
@@ -128,6 +130,20 @@ public class ConversaDAO {
             return mensagens;
         }catch(SQLException e){
             throw new SelectException("Erro ao mostrar a conversa");
+        }
+    }
+
+    public void participa(int id_conversa, int id_usuario) throws SQLException, ClassNotFoundException, InsertException {
+        try {
+            if(participa == null){
+                new ConversaDAO();
+            }
+            participa.setInt(1, id_conversa);
+            participa.setInt(2, id_usuario);
+
+            participa.executeUpdate();
+        } catch (SQLException e) {
+            throw new InsertException("Erro ao participar na conversa");
         }
     }
 }

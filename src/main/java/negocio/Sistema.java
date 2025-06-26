@@ -1,6 +1,7 @@
 package negocio;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import dados.Conversa;
@@ -113,6 +114,14 @@ public class Sistema {
 
     public List<Mensagem> mostraConteudoDaConversa(int id_conversa) throws SQLException, ClassNotFoundException, SelectException {
         return conversaDAO.showConversa(id_conversa);
+    }
+
+    public void participarConversa(int id_conversa, int id_usuario) throws SQLException, ClassNotFoundException, InsertException {
+        conversaDAO.participa(id_conversa, id_usuario);
+    }
+
+    public void comentar(int id_post, int id_usuario, String texto, Timestamp dataHora) throws SQLException, ClassNotFoundException, InsertException{
+        postDAO.comment(id_post, id_usuario, texto, dataHora);
     }
 
 }

@@ -1,5 +1,6 @@
 package persistencia;
 
+import java.sql.Timestamp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,12 +19,14 @@ public class PostDAO {
     private PreparedStatement insert;
     private PreparedStatement delete;
     private PreparedStatement show;
+    private PreparedStatement comment;
 
     private PostDAO() throws ClassNotFoundException, SQLException {
         Connection conexao = Conexao.getConexao();
         insert = conexao.prepareStatement("INSERT INTO post (id_usuario, data_hora, legenda) VALUES (?, ?, ?)");
         delete = conexao.prepareStatement("DELETE FROM post WHERE id_post = ?");
         show = conexao.prepareStatement("SELECT * FROM post");
+        comment = conexao.prepareStatement("INSERT INTO comenta (id_post, id_usuario, texto, dataHora) VALUES (?, ?, ?, ?)");
     }
 
     public static PostDAO getInstance() throws ClassNotFoundException, SQLException {
@@ -86,6 +89,24 @@ public class PostDAO {
             return posts;
         } catch (SQLException e) {
             throw new SQLException("Erro ao mostrar os posts");
+        }
+    }
+
+    public void comment(int id_post, int id_usuario, String texto, Timestamp dataHora) throws SQLException, ClassNotFoundException, InsertException {
+        try {
+            if(comment == null){
+                new PostDAO();
+            }
+
+            comment.setInt(1, id_post);
+            comment.setInt(2, id_usuario);
+            comment.setString(3, texto);
+            comment.setTimestamp(4, dataHora);
+
+            comment.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new InsertException("Erro ao comentar");
         }
     }
 }
