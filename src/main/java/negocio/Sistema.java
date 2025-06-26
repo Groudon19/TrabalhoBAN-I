@@ -124,4 +124,8 @@ public class Sistema {
         postDAO.comment(id_post, id_usuario, texto, dataHora);
     }
 
+    public void possuir(int id_midia) throws SQLException, ClassNotFoundException, InsertException{
+        postDAO.possui(id_midia);
+    }
+
 }

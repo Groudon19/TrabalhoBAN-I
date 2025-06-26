@@ -346,6 +346,9 @@ public class Main {
         mostraUsuarios();
         System.out.println("Digite o ID do usuário que está publicando:");
         int id_usuario = Integer.parseInt(scan.nextLine());
+        mostraMidias();
+        System.out.println("Digite o ID da midia:");
+        int id_midia = Integer.parseInt(scan.nextLine());
         System.out.println("Digite a legenda do post (opcional):");
         String legenda = scan.nextLine();
 
@@ -354,6 +357,7 @@ public class Main {
         post.setLegenda(legenda);
 
         sistema.inserePost(post);
+        sistema.possuir(id_midia);
     }
 
     public static void deletePost() throws SQLException, ClassNotFoundException, DeleteException, SelectException {
@@ -523,5 +527,7 @@ public class Main {
         sistema.comentar(id_post, id_usuario, texto, data_hora);
 
     }
+
+    
 
 }

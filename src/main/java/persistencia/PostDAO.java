@@ -20,6 +20,7 @@ public class PostDAO {
     private PreparedStatement delete;
     private PreparedStatement show;
     private PreparedStatement comment;
+    private PreparedStatement possui;
 
     private PostDAO() throws ClassNotFoundException, SQLException {
         Connection conexao = Conexao.getConexao();
@@ -27,6 +28,8 @@ public class PostDAO {
         delete = conexao.prepareStatement("DELETE FROM post WHERE id_post = ?");
         show = conexao.prepareStatement("SELECT * FROM post");
         comment = conexao.prepareStatement("INSERT INTO comenta (id_post, id_usuario, texto, dataHora) VALUES (?, ?, ?, ?)");
+        possui = conexao.prepareStatement("INSERT INTO possui (id_post, id_midia) VALUES ((SELECT MAX(id_post) FROM post), ?)");
+
     }
 
     public static PostDAO getInstance() throws ClassNotFoundException, SQLException {
@@ -109,4 +112,19 @@ public class PostDAO {
             throw new InsertException("Erro ao comentar");
         }
     }
+
+    public void possui(int id_midia) throws SQLException, ClassNotFoundException, InsertException{
+        try {
+            if(possui == null){
+                new PostDAO();
+            }
+            possui.setInt(1, id_midia);
+
+            possui.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new InsertException("Erro ao inserir midia no post");
+        }
+    }
+
 }
