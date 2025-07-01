@@ -20,6 +20,7 @@ public class UsuarioDAO {
     private PreparedStatement show;
     private PreparedStatement follow;
     private PreparedStatement like;
+    private PreparedStatement checkLogin;
     private PreparedStatement mostfollowedusersfollowers;
 
     private UsuarioDAO() throws SQLException, ClassNotFoundException{
@@ -38,6 +39,7 @@ public class UsuarioDAO {
         follow = conexao.prepareStatement("INSERT INTO segue (id_seguidor, id_seguido) VALUES (?,?)");
         like = conexao.prepareStatement("INSERT INTO curte (id_post, id_usuario) VALUES (?, ?)");
         mostfollowedusersfollowers = conexao.prepareStatement("SELECT * FROM usuario WHERE id_usuario = ANY (SELECT s1.id_seguidor FROM segue s1 WHERE s1.id_seguido = (SELECT s2.id_seguido FROM segue s2 GROUP BY s2.id_seguido ORDER BY COUNT (s2.id_seguidor) DESC LIMIT 1));");
+        checkLogin = conexao.prepareStatement("SELECT * FROM usuario WHERE email = ? AND senha = ?;");
     }
 
     public static UsuarioDAO getInstance() throws ClassNotFoundException, SQLException {
@@ -137,6 +139,35 @@ public class UsuarioDAO {
             like.executeUpdate();
         }catch(SQLException e){
             throw new InsertException("Erro ao curtir");
+        }
+    }
+
+    public Usuario login(String email, String senha) throws SQLException, ClassNotFoundException, SelectException {
+        try{
+            if(checkLogin == null){
+                new UsuarioDAO();
+            }
+            checkLogin.setString(1, email);
+            checkLogin.setString(2, senha);
+
+            checkLogin.executeQuery();
+
+            Usuario usuario = new Usuario();
+            ResultSet rs = checkLogin.getResultSet();
+            while(rs.next()){
+                usuario.setId_usuario(rs.getInt("id_usuario"));
+                usuario.setNome(rs.getString("nome"));
+                usuario.setEmail(rs.getString("email"));
+                usuario.setSenha(rs.getString("senha"));
+                if(rs.getString("descricao") != null){
+                    usuario.setDescricao(rs.getString("descricao"));
+                } else {
+                    usuario.setDescricao("[null]");
+                }
+            }
+            return usuario;
+        }catch(SQLException e){
+            throw new SelectException("Erro ao fazer login no BD");
         }
     }
 

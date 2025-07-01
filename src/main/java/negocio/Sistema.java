@@ -56,6 +56,10 @@ public class Sistema {
         usuarioDAO.like(id_post, id_usuario);
     }
 
+    public Usuario login(String email, String senha) throws SQLException, ClassNotFoundException, SelectException {
+        return usuarioDAO.login(email, senha);
+    }
+
     public List<Usuario> subconsulta()throws SQLException, ClassNotFoundException, SelectException{
         return usuarioDAO.mostFollowedUsersFollowers();
     }

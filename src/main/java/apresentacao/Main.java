@@ -16,8 +16,7 @@ import negocio.Sistema;
 
 // TODO: Mensagem de erro para usuário não encontrado ao excluir
 // TODO: Mensagem de erro para usuário já cadastrado ao cadastrar
-// TODO: Uma opção para listar o resultado de uma consulta que envolva uma junção entre duas tabelas: Mensagens na conversa
-// TODO: Uma opção para listar o resultado de uma consulta que envolva subconsulta(s) e uma ou mais funções de agregação: Num de seg de um usuario
+
 
 public class Main {
     private static Scanner scan = new Scanner(System.in);
@@ -25,204 +24,323 @@ public class Main {
     private static Sistema sistema;
 
     public static void main(String[] args) {
-        
-        try{
-            sistema = new Sistema("Groudon19!");
 
-            System.out.println("Escolha a oopcao:");
-            int opcao = -1;
-            do {
-                opcao = menu(scan);
-                switch (opcao) {
-                    case 1:
-                        // Login();
-                        int opcaoLogin = menuLogin(scan);
+    try {
+        sistema = new Sistema("Groudon19!");
+
+        System.out.println("Escolha a oopcao:");
+        int opcao = -1;
+        do {
+            opcao = menuInicial(scan);
+            switch (opcao) {
+                case 1:
+                    int opcaoLogin = -1;
+                    do {
+                        opcaoLogin = menuLogin(scan); 
                         switch (opcaoLogin) {
-
-                        }
-                    case 2:
-                        int opcaoUser = menuUsuario(scan);
-                        switch (opcaoUser) {
                             case 1:
-                                // Chamar método para cadastrar usuário
-                                System.out.println("Cadastrar Usuário");
-                                cadastraUsuario(sistema);
-                                break;
-                            case 2:
-                                // Chamar método para mostrar usuários
-                                System.out.println("Mostrar Usuários");
-                                mostraUsuarios();
-                                break;
-                            case 3:
-                                // Chamar método para excluir usuário
-                                System.out.println("Excluir Usuário");
-                                deleteUsuario();
-                                break;
-                            case 4:
-                                System.out.println("Seguir Usuário");
-                                segueUsuario();
-                                break;
-                            case 5:
-                                System.out.println("Curtir Post");
-                                curtePost();
-                                break;
-                            case 6:
-                                System.out.println("Mostra seguidores do Usuario mais seguido");
-                                subconsulta();
+                                System.out.println("Entrar");
+                                Usuario usuario = login(sistema);
+                                System.out.println("Login de " + usuario.getNome() + " feito com sucesso");
+                                int opcaoPrincipal = -1;
+                                do{
+                                    opcaoPrincipal = menuPrincipal(scan);
+                                    switch(opcaoPrincipal){
+                                        case 1:
+                                            int opcaoFeed = -1;
+                                            do{
+                                                opcaoFeed = feed(scan);
+                                                switch(opcaoFeed){
+                                                    case 1:
+                                                        mostraPosts();
+                                                        break;
+                                                    case 2:
+                                                        curtePost(usuario.getId_usuario());
+                                                        break;
+                                                    case 3:
+                                                        comentaPost(usuario.getId_usuario());
+                                                        break;
+                                                    case 4:
+                                                        segueUsuario(usuario.getId_usuario());
+                                                        break;
+                                                    case 0: 
+                                                        System.out.println("Voltando ao menu principal...");
+                                                        break; 
+                                                    default:
+                                                        System.out.println("Opção inválida! Tente novamente.");
+                                                        break;
+                                                }
+                                            }while(opcaoFeed != 0);
+                                            break;
+                                        case 2:
+                                            curtePost(usuario.getId_usuario());
+                                            break;
+                                        case 0: 
+                                            System.out.println("Voltando ao menu principal...");
+                                            break; 
+                                        default:
+                                            System.out.println("Opção inválida! Tente novamente.");
+                                            break; 
+                                    }
+                                }while(opcaoPrincipal != 0);
                                 break; 
-                            case 0:
+                            case 2: 
+                                System.out.println("Cadastrar");
+                                cadastraUsuario(sistema);
+                                System.out.println("Usuario cadastrado com sucesso");
+                                break; 
+                            case 0: 
+                                System.out.println("Voltando ao menu principal...");
+                                break; 
+                            default:
+                                System.out.println("Opção inválida! Tente novamente.");
+                                break; 
+                        }
+                    } while (opcaoLogin != 0); 
+                    break;
+                case 2: 
+                    int opcaoAdmin = -1;
+                    do {
+                        opcaoAdmin = menuAdmin(scan); 
+                        switch (opcaoAdmin) {
+                            case 1: 
+                                int opcaoUser = -1;
+                                do {
+                                    opcaoUser = menuUsuario(scan); 
+                                    switch (opcaoUser) {
+                                        case 1:
+                                            System.out.println("Cadastrar Usuário");
+                                            cadastraUsuario(sistema);
+                                            break;
+                                        case 2:
+                                            System.out.println("Mostrar Usuários");
+                                            mostraUsuarios();
+                                            break;
+                                        case 3:
+                                            System.out.println("Excluir Usuário");
+                                            deleteUsuario();
+                                            break;
+                                        case 4:
+                                            System.out.println("Mostra seguidores do Usuario mais seguido");
+                                            subconsulta();
+                                            break;
+                                        case 0:
+                                            System.out.println("Voltando ao menu de Administrador..."); 
+                                            break; 
+                                        default:
+                                            System.out.println("Opção inválida! Tente novamente.");
+                                    }
+                                } while (opcaoUser != 0); 
+                                break; 
+                            case 2: 
+                                int opcaoPost = -1;
+                                do {
+                                    opcaoPost = menuPost(scan);
+                                    switch (opcaoPost) {
+                                        case 1:
+                                            System.out.println("Publicar Post");
+                                            publicaPost(sistema);
+                                            break;
+                                        case 2:
+                                            System.out.println("Mostrar Posts");
+                                            mostraPosts();
+                                            break;
+                                        case 3:
+                                            System.out.println("Excluir Post");
+                                            deletePost();
+                                            break;
+                                        case 0:
+                                            System.out.println("Voltando ao menu de Administrador...");
+                                            break;
+                                        default:
+                                            System.out.println("Opção inválida! Tente novamente.");
+                                    }
+                                } while (opcaoPost != 0);
+                                break;
+                            case 3: // Menu Mídia
+                                int opcaoMidia = -1;
+                                do {
+                                    opcaoMidia = menuMidia(scan);
+                                    switch (opcaoMidia) {
+                                        case 1:
+                                            System.out.println("Publica Mídia");
+                                            publicaMidia(sistema);
+                                            break;
+                                        case 2:
+                                            System.out.println("Mostrar Mídias");
+                                            mostraMidias();
+                                            break;
+                                        case 3:
+                                            System.out.println("Excluir Mídia");
+                                            deleteMidia();
+                                            break;
+                                        case 0:
+                                            System.out.println("Voltando ao menu de Administrador...");
+                                            break;
+                                        default:
+                                            System.out.println("Opção inválida! Tente novamente.");
+                                    }
+                                } while (opcaoMidia != 0);
+                                break;
+                            case 4: // Menu Mensagem
+                                int opcaoMensagem = -1;
+                                do {
+                                    opcaoMensagem = menuMensagem(scan);
+                                    switch (opcaoMensagem) {
+                                        case 1:
+                                            System.out.println("Mandar Mensagem");
+                                            mandaMensagem();
+                                            break;
+                                        case 2:
+                                            System.out.println("Mostrar Mensagens");
+                                            mostraMensagens();
+                                            break;
+                                        case 3:
+                                            System.out.println("Excluir Mensagem");
+                                            removeMensagem();
+                                            break;
+                                        case 0:
+                                            System.out.println("Voltando ao menu de Administrador...");
+                                            break;
+                                        default:
+                                            System.out.println("Opção inválida! Tente novamente.");
+                                    }
+                                } while (opcaoMensagem != 0);
+                                break;
+                            case 5: // Menu Conversa
+                                int opcaoConversa = -1;
+                                do {
+                                    opcaoConversa = menuConversa(scan);
+                                    switch (opcaoConversa) {
+                                        case 1:
+                                            System.out.println("Cadastrar Conversa");
+                                            criaConversa();
+                                            break;
+                                        case 2:
+                                            System.out.println("Mostrar Conversas");
+                                            mostraConversas();
+                                            break;
+                                        case 3:
+                                            System.out.println("Excluir Conversa");
+                                            removeConversa();
+                                            break;
+                                        case 4:
+                                            System.out.println("Mostrar uma Conversa");
+                                            mostraConteudoDaConversa();
+                                            break;
+                                        case 5:
+                                            System.out.println("Adicionar um Usuário na Conversa");
+                                            adicionarUsuarioNaConversa();
+                                            break;
+                                        case 0:
+                                            System.out.println("Voltando ao menu de Administrador...");
+                                            break;
+                                        default:
+                                            System.out.println("Opção inválida! Tente novamente.");
+                                    }
+                                } while (opcaoConversa != 0);
+                                break;
+                            case 0: 
                                 System.out.println("Voltando ao menu principal...");
                                 break;
                             default:
                                 System.out.println("Opção inválida! Tente novamente.");
                         }
-                        break;
-                    case 3:
-                        int opcaoPost = menuPost(scan);
-                        switch(opcaoPost){
-                            case 1:
-                                // Chamar método para cadastrar post
-                                System.out.println("Publicar Post");
-                                publicaPost(sistema);
-                                break;
-                            case 2:
-                                // Chamar método para mostrar posts
-                                System.out.println("Mostrar Posts");
-                                mostraPosts();
-                                break;
-                            case 3:
-                                // Chamar método para excluir post
-                                System.out.println("Excluir Post");
-                                deletePost();
-                                break;
-                            case 4:
-                                System.out.println("Comentando");
-                                comentaPost();
-                                break;
-                            case 0:
-                                System.out.println("Voltando ao menu principal...");
-                                break;
-                            default:
-                                System.out.println("Opção inválida! Tente novamente.");
-                        }
-                        
-                        break;
-                    case 4:
-                        int opcaoMidia = menuMidia(scan);
-                        switch(opcaoMidia){
-                            case 1:
-                                // Chamar método para cadastrar mídia
-                                System.out.println("Publica Mídia");
-                                publicaMidia(sistema);
-                                break;
-                            case 2:
-                                // Chamar método para mostrar mídias
-                                System.out.println("Mostrar Mídias");
-                                mostraMidias();
-                                break;
-                            case 3:
-                                // Chamar método para excluir mídia
-                                System.out.println("Excluir Mídia");
-                                deleteMidia();
-                                break;
-                            case 0:
-                                System.out.println("Voltando ao menu principal...");
-                                break;
-                            default:
-                                System.out.println("Opção inválida! Tente novamente.");
-                        }
-                        break;
-                    case 5:
-                        int opcaoMensagem = menuMensagem(scan);
-                        switch(opcaoMensagem){
-                            case 1:
-                                // Chamar método para cadastrar mensagem
-                                System.out.println("Mandar Mensagem");
-                                mandaMensagem();
-                                break;
-                            case 2:
-                                // Chamar método para mostrar mensagens
-                                System.out.println("Mostrar Mensagens");
-                                mostraMensagens();
-                                break;
-                            case 3:
-                                // Chamar método para excluir mensagem
-                                System.out.println("Excluir Mensagem");
-                                removeMensagem();
-                                break;
-                            case 0:
-                                System.out.println("Voltando ao menu principal...");
-                                break;
-                            default:
-                                System.out.println("Opção inválida! Tente novamente.");
-                        }
-                    
-                        break;
-                    case 6:
-                        int opcaoConversa = menuConversa(scan);
-                        switch(opcaoConversa){
-                            case 1:
-                                // Chamar método para cadastrar conversa
-                                System.out.println("Cadastrar Conversa");
-                                criaConversa();
-                                break;
-                            case 2:
-                                // Chamar método para mostrar conversas
-                                System.out.println("Mostrar Conversas");
-                                mostraConversas();
-                                break;
-                            case 3:
-                                // Chamar método para excluir conversa
-                                System.out.println("Excluir Conversa");
-                                removeConversa();
-                                break;
-                            case 4:
-                                System.out.println("Mostrar uma Conversa");
-                                mostraConteudoDaConversa();
-                                break;
-                            case 5:
-                                System.out.println("Adicionar um Usuário na Conversa");
-                                adicionarUsuarioNaConversa();
-                                break;
-                            case 0:
-                                System.out.println("Voltando ao menu principal...");
-                                break;
-                            default:
-                                System.out.println("Opção inválida! Tente novamente.");
-                        }
-                        
-                        break;
-                    case 0:
-                        System.out.println("Saindo do programa...");
-                        break;
-                    default:
-                        System.out.println("Opção inválida! Tente novamente.");
-                }
-            } while (opcao != 0);
-            System.out.println("Programa encerrado.");
-        }catch(SQLException | ClassNotFoundException | InsertException | DeleteException | SelectException e){
-            e.printStackTrace();
+                    } while (opcaoAdmin != 0); 
+                    break; 
+                case 0:
+                    System.out.println("Saindo do programa...");
+                    break;
+                default:
+                    System.out.println("Opção inválida! Tente novamente.");
+            }
+        } while (opcao != 0); 
+        System.out.println("Programa encerrado.");
+    } catch (SQLException | ClassNotFoundException | InsertException | DeleteException | SelectException e) {
+        e.printStackTrace();
+    }
+}
 
-        }
-
+    public static int menuInicial(Scanner scan){
+        System.out.println("-------- Inicio --------");
+        System.out.println("1 - Usuario");
+        System.out.println("2 - Admin");
+        System.out.println("0 - Sair do Programa");
+        System.out.print("Sua opção: ");
+        return Integer.parseInt(scan.nextLine());
     }
 
-    public static int menu(Scanner scan){
-        System.out.println("-------- Menu Principal --------");
-        System.out.println("1 - Login");
-        System.out.println("2 - Usuario");
-        System.out.println("3 - Post");
-        System.out.println("4 - Midia");
-        System.out.println("5 - Mensagem");
-        System.out.println("6 - Conversa");
-        System.out.println("0 - Sair do Programa");
+    public static int menuAdmin(Scanner scan){
+        System.out.println("-------- Admin --------");
+        System.out.println("1 - Usuario");
+        System.out.println("2 - Post");
+        System.out.println("3 - Midia");
+        System.out.println("4 - Mensagem");
+        System.out.println("5 - Conversa");
+        System.out.println("0 - Voltar");
         System.out.print("Sua opção: ");
         return Integer.parseInt(scan.nextLine());
     }
 
     public static int menuLogin(Scanner scan){
         System.out.println("-------- Login --------");
-        System.out.println("");
+        System.out.println("1 - Entrar");
+        System.out.println("2 - Cadastrar");
+        System.out.println("0 - Voltar");
+        System.out.print("Sua opção: ");
+        return Integer.parseInt(scan.nextLine());
+    }
+
+    public static int menuPrincipal(Scanner scan){
+        System.out.println("-------- Menu Principal --------");
+        System.out.println("1 - Feed");
+        System.out.println("2 - Perfil");
+        System.out.println("3 - Chat");
+        System.out.println("0 - Sair");
+        System.out.print("Sua opção: ");
+        return Integer.parseInt(scan.nextLine());
+    }
+
+    public static int feed(Scanner scan){
+        System.out.println("-------- Feed ---------");
+        System.out.println("1 - Ver Posts");
+        System.out.println("2 - Curtir");
+        System.out.println("3 - Comentar");
+        System.out.println("4 - Seguir");
+        System.out.println("0 - Voltar");
+        System.out.print("Sua opção: ");
+        return Integer.parseInt(scan.nextLine());
+    }
+
+    public static int menu(Scanner scan){
+        //feed
+        System.out.println("-------- Login --------");
+        System.out.println("1 - Mostrar Posts"); //todos
+        System.out.println("2 - Curtir um Post");
+        System.out.println("3 - Fazer um comentario");
+        System.out.println("4 - Seguir Usuario");
+        
+        //perfil
+        System.out.println("1 - Mostrar Posts"); //apenas o proprio
+        System.out.println("2 - Publicar Post"); //cuidado ao ter midia no post
+        System.out.println("3 - Excluir Post");
+        System.out.println("4 - Excluir Conta");
+
+
+        //chat
+        System.out.println("1 - Mostrar Conversas");
+        System.out.println("2 - Acessar conversa");
+        //dentro do acessar
+        System.out.println("1 - Mostrar conteudo de uma conversa");
+        System.out.println("2 - Enviar Mensagem");
+        System.out.println("3 - Excluir Mensagem");
+        System.out.println("4 - Adicionar Usuário a uma conversa");
+
+        //chat
+        System.out.println("3 - Cadastrar Conversa");
+        System.out.println("4 - Excluir Conversa");
+        
+
         return Integer.parseInt(scan.nextLine());
     }
 
@@ -231,9 +349,7 @@ public class Main {
         System.out.println("1 - Cadastrar Usuario");
         System.out.println("2 - Mostrar Usuarios");
         System.out.println("3 - Excluir Usuario");
-        System.out.println("4 - Seguir Usuario");
-        System.out.println("5 - Curtir um Post");
-        System.out.println("6 - Mostrar seguidores do usuario mais seguido");
+        System.out.println("4 - Mostrar seguidores do usuario mais seguido");
         System.out.println("0 - Voltar ao Menu Principal");
         System.out.print("Sua opção: ");
         return Integer.parseInt(scan.nextLine());
@@ -244,7 +360,6 @@ public class Main {
         System.out.println("1 - Publicar Post");
         System.out.println("2 - Mostrar Posts");
         System.out.println("3 - Excluir Post");
-        System.out.println("4 - Fazer um comentario");
         System.out.println("0 - Voltar ao Menu Principal");
         System.out.print("Sua opção: ");
         return Integer.parseInt(scan.nextLine());
@@ -282,8 +397,17 @@ public class Main {
         return Integer.parseInt(scan.nextLine());
     }
 
-    public static void login(Sistema sistema) throws SQLException, ClassNotFoundException, InsertException {
-        
+    public static Usuario login(Sistema sistema) throws SQLException, ClassNotFoundException, SelectException {
+        try{
+            System.out.println("Digite seu e-mail: ");
+            String email = scan.nextLine();
+            System.out.println("Digite sua senha: ");
+            String senha = scan.nextLine();
+
+            return sistema.login(email, senha);
+        }catch(SQLException e){
+            throw new SelectException("Erro no login");
+        }
     }
 
     public static void cadastraUsuario(Sistema sistema) throws SQLException, ClassNotFoundException, InsertException {
@@ -319,13 +443,9 @@ public class Main {
         }
     }
 
-    public static void segueUsuario()throws SQLException, ClassNotFoundException, InsertException, SelectException {
-        int id_seguidor = 0;
+    public static void segueUsuario(int id_seguidor)throws SQLException, ClassNotFoundException, InsertException, SelectException {
         int id_seguido = 0;
         do{
-            mostraUsuarios();
-            System.out.println("Digite o seu ID de usuario:");
-            id_seguidor = Integer.parseInt(scan.nextLine());
             mostraUsuarios();
             System.out.println("Digite o ID do usuario que quer seguir:");
             id_seguido = Integer.parseInt(scan.nextLine());
@@ -334,14 +454,10 @@ public class Main {
         sistema.segueUsuario(id_seguidor, id_seguido);
     }
 
-    public static void curtePost() throws SQLException, ClassNotFoundException, InsertException, SelectException {
+    public static void curtePost(int id_usuario) throws SQLException, ClassNotFoundException, InsertException, SelectException {
         int id_post = 0;
-        int id_usuario = 0;
 
         do{
-            mostraUsuarios();
-            System.out.println("Digite o seu ID de usuario:");
-            id_usuario = Integer.parseInt(scan.nextLine());
             mostraPosts();
             System.out.println("Digite o ID do post que quer curtir:");
             id_post = Integer.parseInt(scan.nextLine());
@@ -545,10 +661,7 @@ public class Main {
         sistema.participarConversa(id_conversa, id_usuario);
     }
 
-    public static void comentaPost() throws SQLException, ClassNotFoundException, InsertException, SelectException{
-        mostraUsuarios();
-        System.out.println("Digite o ID do usuario:");
-        int id_usuario = Integer.parseInt(scan.nextLine());
+    public static void comentaPost(int id_usuario) throws SQLException, ClassNotFoundException, InsertException, SelectException{
         mostraPosts();
         System.out.println("Digite o id do post:");
         int id_post = Integer.parseInt(scan.nextLine());
