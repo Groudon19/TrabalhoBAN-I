@@ -25,7 +25,15 @@ public class UsuarioDAO {
     private UsuarioDAO() throws SQLException, ClassNotFoundException{
         Connection conexao = Conexao.getConexao();
         insert = conexao.prepareStatement("INSERT INTO usuario (nome, senha, descricao, email) VALUES (?, ?, ?, ?)");
-        delete = conexao.prepareStatement("DELETE FROM usuario WHERE id_usuario = ?");
+        delete = conexao.prepareStatement("UPDATE mensagem\n" +
+                                          "SET id_usuario = NULL\n" +
+                                          "WHERE id_usuario = ?;\n" +
+                                          "DELETE FROM segue WHERE id_seguidor = ?;\n" +
+                                          "DELETE FROM segue WHERE id_seguido = ?;\n" +
+                                          "DELETE FROM curte WHERE id_usuario = ?;\n" +
+                                          "DELETE FROM comenta WHERE id_usuario = ?;\n" +
+                                          "DELETE FROM participa WHERE id_usuario = ?;\n" +
+                                          "DELETE FROM usuario WHERE id_usuario = ?;");
         show = conexao.prepareStatement("SELECT * FROM usuario");
         follow = conexao.prepareStatement("INSERT INTO segue (id_seguidor, id_seguido) VALUES (?,?)");
         like = conexao.prepareStatement("INSERT INTO curte (id_post, id_usuario) VALUES (?, ?)");
@@ -64,6 +72,12 @@ public class UsuarioDAO {
                 new UsuarioDAO();
             }
             delete.setInt(1, id);
+            delete.setInt(2, id);
+            delete.setInt(3, id);
+            delete.setInt(4, id);
+            delete.setInt(5, id);
+            delete.setInt(6, id);
+            delete.setInt(7, id);
             delete.executeUpdate();
         } catch (SQLException e) {
             throw new DeleteException("Usuário não pode ser removido");

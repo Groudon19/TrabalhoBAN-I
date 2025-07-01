@@ -21,16 +21,18 @@ public class ConversaDAO {
     private PreparedStatement show;
     private PreparedStatement participa;
     private PreparedStatement showConversa;
+    private PreparedStatement allMessages;
 
 
     private ConversaDAO() throws ClassNotFoundException, SQLException {
-        // Construtor privado para evitar instanciamento externo
+        
         Connection conexao = Conexao.getConexao();
         insert = conexao.prepareStatement("INSERT INTO conversa (nome_conversa) VALUES (?)");
-        delete = conexao.prepareStatement("DELETE FROM conversa WHERE id_conversa = ?");
+        delete = conexao.prepareStatement("DELETE FROM participa WHERE id_conversa = ?;" + "DELETE FROM conversa WHERE id_conversa = ?");
         show = conexao.prepareStatement("SELECT * FROM conversa");
         showConversa = conexao.prepareStatement("SELECT m.* FROM recebe r, mensagem m WHERE ? = r.id_conversa AND m.id_mensagem = r.id_mensagem ORDER BY m.data_hora;");
         participa = conexao.prepareStatement("INSERT INTO participa (id_conversa, id_usuario) VALUES (?, ?)");
+        allMessages = conexao.prepareStatement("SELECT id_mensagem FROM recebe WHERE id_conversa = ?;");
     }
 
     public static ConversaDAO getInstance() throws ClassNotFoundException, SQLException {
@@ -59,10 +61,29 @@ public class ConversaDAO {
                 new ConversaDAO();
             }
             delete.setInt(1, idConversa);
+            delete.setInt(2, idConversa);
             delete.executeUpdate();
 
         } catch (SQLException e) {
             throw new DeleteException("Erro ao deletar conversa: " + e.getMessage());
+        }
+    }
+
+    public List<Integer> todasMensagens(int id_conversa) throws SQLException, ClassNotFoundException, SelectException{
+        try{
+            if(allMessages == null){
+                new ConversaDAO();
+            }
+            allMessages.setInt(1, id_conversa);
+            allMessages.executeQuery();
+            List<Integer> mensagens = new ArrayList<Integer>();
+            ResultSet rs = allMessages.getResultSet();
+            while(rs.next()){
+                mensagens.add(rs.getInt("id_mensagem"));
+            }
+            return mensagens; 
+        }catch(SQLException e){
+            throw new SelectException("Erro ao deletar mensagens de uma conversa");
         }
     }
 

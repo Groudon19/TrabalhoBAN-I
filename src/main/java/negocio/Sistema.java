@@ -68,6 +68,10 @@ public class Sistema {
         postDAO.delete(id);
     }
 
+    public List<Integer> removePostUsuario(int id_usuario) throws SQLException, ClassNotFoundException, SelectException {
+        return postDAO.removePostsUsuario(id_usuario);
+    }
+
     public List<Post> mostraPosts() throws SQLException, ClassNotFoundException, SelectException {
         return postDAO.show();
     }
@@ -106,6 +110,10 @@ public class Sistema {
 
     public void removeConversa(int id) throws SQLException, ClassNotFoundException, DeleteException {
         conversaDAO.deleteConversa(id);
+    }
+
+    public List<Integer> mensagensConversa(int id_conversa) throws SQLException, ClassNotFoundException, SelectException{
+        return conversaDAO.todasMensagens(id_conversa);
     }
 
     public List<Conversa> mostraConversas() throws SQLException, ClassNotFoundException, SelectException {

@@ -1,10 +1,11 @@
 package persistencia;
 
-import java.sql.Timestamp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,14 +22,24 @@ public class PostDAO {
     private PreparedStatement show;
     private PreparedStatement comment;
     private PreparedStatement possui;
+    private PreparedStatement postsUsuario;
 
     private PostDAO() throws ClassNotFoundException, SQLException {
         Connection conexao = Conexao.getConexao();
         insert = conexao.prepareStatement("INSERT INTO post (id_usuario, data_hora, legenda) VALUES (?, ?, ?)");
-        delete = conexao.prepareStatement("DELETE FROM post WHERE id_post = ?");
+        delete = conexao.prepareStatement("UPDATE mensagem\n" +
+                                          "SET id_post = NULL,\n" +
+                                          "\ttexto = 'Post excluido" +
+                                          "' || texto\n" +
+                                          "WHERE id_post = ?;\n" +
+                                          "DELETE FROM curte WHERE id_post = ?;\n" +
+                                          "DELETE FROM comenta WHERE id_post = ?;\n" +
+                                          "DELETE FROM possui WHERE id_post = ?;\n" +
+                                          "DELETE FROM post WHERE id_post = ?;");
         show = conexao.prepareStatement("SELECT * FROM post");
         comment = conexao.prepareStatement("INSERT INTO comenta (id_post, id_usuario, texto, dataHora) VALUES (?, ?, ?, ?)");
         possui = conexao.prepareStatement("INSERT INTO possui (id_post, id_midia) VALUES ((SELECT MAX(id_post) FROM post), ?)");
+        postsUsuario = conexao.prepareStatement("SELECT id_post FROM post WHERE id_usuario = ?");
 
     }
 
@@ -63,6 +74,10 @@ public class PostDAO {
                 new PostDAO();
             }
             delete.setInt(1, id);
+            delete.setInt(2, id);
+            delete.setInt(3, id);
+            delete.setInt(4, id);
+            delete.setInt(5, id);
             delete.executeUpdate();
         } catch (SQLException e) {
             throw new DeleteException("Erro ao deletar o post");
@@ -124,6 +139,26 @@ public class PostDAO {
 
         } catch (SQLException e) {
             throw new InsertException("Erro ao inserir midia no post");
+        }
+    }
+
+    public List<Integer> removePostsUsuario(int id_usuario)throws SQLException, ClassNotFoundException, SelectException{
+        try{
+            if(postsUsuario == null){
+                new PostDAO();
+            }
+            postsUsuario.setInt(1, id_usuario);
+            postsUsuario.executeQuery();
+            List<Integer> posts = new ArrayList<Integer>();
+            ResultSet rs = postsUsuario.getResultSet();
+            while(rs.next()){
+                posts.add(rs.getInt("id_post"));
+            }
+            
+            return posts;
+
+        }catch (SQLException e){
+            throw new SelectException("Erro ao remover posts do usuario");
         }
     }
 

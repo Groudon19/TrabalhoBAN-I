@@ -35,6 +35,12 @@ public class Main {
                 opcao = menu(scan);
                 switch (opcao) {
                     case 1:
+                        // Login();
+                        int opcaoLogin = menuLogin(scan);
+                        switch (opcaoLogin) {
+
+                        }
+                    case 2:
                         int opcaoUser = menuUsuario(scan);
                         switch (opcaoUser) {
                             case 1:
@@ -71,7 +77,7 @@ public class Main {
                                 System.out.println("Opção inválida! Tente novamente.");
                         }
                         break;
-                    case 2:
+                    case 3:
                         int opcaoPost = menuPost(scan);
                         switch(opcaoPost){
                             case 1:
@@ -101,7 +107,7 @@ public class Main {
                         }
                         
                         break;
-                    case 3:
+                    case 4:
                         int opcaoMidia = menuMidia(scan);
                         switch(opcaoMidia){
                             case 1:
@@ -126,7 +132,7 @@ public class Main {
                                 System.out.println("Opção inválida! Tente novamente.");
                         }
                         break;
-                    case 4:
+                    case 5:
                         int opcaoMensagem = menuMensagem(scan);
                         switch(opcaoMensagem){
                             case 1:
@@ -152,7 +158,7 @@ public class Main {
                         }
                     
                         break;
-                    case 5:
+                    case 6:
                         int opcaoConversa = menuConversa(scan);
                         switch(opcaoConversa){
                             case 1:
@@ -203,13 +209,20 @@ public class Main {
 
     public static int menu(Scanner scan){
         System.out.println("-------- Menu Principal --------");
-        System.out.println("1 - Usuario");
-        System.out.println("2 - Post");
-        System.out.println("3 - Midia");
-        System.out.println("4 - Mensagem");
-        System.out.println("5 - Conversa");
+        System.out.println("1 - Login");
+        System.out.println("2 - Usuario");
+        System.out.println("3 - Post");
+        System.out.println("4 - Midia");
+        System.out.println("5 - Mensagem");
+        System.out.println("6 - Conversa");
         System.out.println("0 - Sair do Programa");
         System.out.print("Sua opção: ");
+        return Integer.parseInt(scan.nextLine());
+    }
+
+    public static int menuLogin(Scanner scan){
+        System.out.println("-------- Login --------");
+        System.out.println("");
         return Integer.parseInt(scan.nextLine());
     }
 
@@ -267,6 +280,10 @@ public class Main {
         System.out.println("0 - Voltar ao Menu Principal");
         System.out.print("Sua opção: ");
         return Integer.parseInt(scan.nextLine());
+    }
+
+    public static void login(Sistema sistema) throws SQLException, ClassNotFoundException, InsertException {
+        
     }
 
     public static void cadastraUsuario(Sistema sistema) throws SQLException, ClassNotFoundException, InsertException {
@@ -334,11 +351,19 @@ public class Main {
     }
 
     public static void deleteUsuario() throws SQLException, ClassNotFoundException, DeleteException, SelectException {
-        mostraUsuarios();
-        System.out.println("Digite o ID do usuário a ser excluído:");
-        int id = Integer.parseInt(scan.nextLine());
-        
-        sistema.removeUsuario(id);
+         try{
+            mostraUsuarios();
+            System.out.println("Digite o ID do usuário a ser excluído:");
+            int id = Integer.parseInt(scan.nextLine());
+            for(int i : sistema.removePostUsuario(id)){
+                
+                sistema.removePost(i);
+                // System.out.println(i);
+            }
+            sistema.removeUsuario(id);
+         }catch(SQLException e){
+            throw new DeleteException("Erro ao deletar usuario");
+         }
     }
 
     public static void publicaPost(Sistema sistema) throws SQLException, ClassNotFoundException, InsertException, SelectException {
@@ -410,48 +435,52 @@ public class Main {
     }
 
     public static void mandaMensagem() throws SQLException, ClassNotFoundException, InsertException, SelectException {
-        Mensagem mensagem = new Mensagem();
-        System.out.println("Digite o ID do usuário que está enviando a mensagem:");
-        int id_usuario = Integer.parseInt(scan.nextLine());
+        try {    
+            Mensagem mensagem = new Mensagem();
+            System.out.println("Digite o ID do usuário que está enviando a mensagem:");
+            int id_usuario = Integer.parseInt(scan.nextLine());
 
-        mostraConversas();
-        System.out.println("Digite o ID da conversa:");
-        int id_conversa = Integer.parseInt(scan.nextLine());
+            mostraConversas();
+            System.out.println("Digite o ID da conversa:");
+            int id_conversa = Integer.parseInt(scan.nextLine());
 
-        int id_post = 0;
-        int id_midia = 0;
-        System.out.println("Digite o ID do post relacionado (opcional):");
-        String id_post_input = scan.nextLine();
-        if (!id_post_input.isEmpty()) {
-            id_post = Integer.parseInt(id_post_input);
-        }
-
-        if(id_post == 0){
-            System.out.println("Digite o ID da mídia relacionada (opcional):");
-            String id_midia_input = scan.nextLine();
-            if (!id_midia_input.isEmpty()) {
-                id_midia = Integer.parseInt(id_midia_input);
+            int id_post = 0;
+            int id_midia = 0;
+            System.out.println("Digite o ID do post relacionado (opcional):");
+            String id_post_input = scan.nextLine();
+            if (!id_post_input.isEmpty()) {
+                id_post = Integer.parseInt(id_post_input);
             }
+
+            if(id_post == 0){
+                System.out.println("Digite o ID da mídia relacionada (opcional):");
+                String id_midia_input = scan.nextLine();
+                if (!id_midia_input.isEmpty()) {
+                    id_midia = Integer.parseInt(id_midia_input);
+                }
+            }
+
+            String texto = "";
+            do{
+                System.out.println("Digite o texto da mensagem:");
+                texto = scan.nextLine();
+            }while(id_post == 0 && id_midia == 0 && texto.isEmpty());
+
+            Timestamp data_hora = new Timestamp(System.currentTimeMillis());
+
+            mensagem.setId_usuario(id_usuario);
+            mensagem.setId_post(id_post);
+            mensagem.setId_midia(id_midia);
+            mensagem.setTexto(texto);
+            mensagem.setData_hora(data_hora);
+            mensagem.setEntregue(true);
+            mensagem.setVisualizado(false);
+
+            sistema.insereMensagem(mensagem);
+            sistema.recebeMensagem(id_conversa); // recebe a mensagem mais recente
+        }catch(SQLException e){
+            throw new InsertException("Erro ao enviar mensagem");
         }
-
-        String texto = "";
-        do{
-            System.out.println("Digite o texto da mensagem:");
-            texto = scan.nextLine();
-        }while(id_post == 0 && id_midia == 0 && texto.isEmpty());
-
-        Timestamp data_hora = new Timestamp(System.currentTimeMillis());
-
-        mensagem.setId_usuario(id_usuario);
-        mensagem.setId_post(id_post);
-        mensagem.setId_midia(id_midia);
-        mensagem.setTexto(texto);
-        mensagem.setData_hora(data_hora);
-        mensagem.setEntregue(true);
-        mensagem.setVisualizado(false);
-
-        sistema.insereMensagem(mensagem);
-        sistema.recebeMensagem(id_conversa);
     }
 
     public static void removeMensagem() throws SQLException, ClassNotFoundException, DeleteException, SelectException {
@@ -462,7 +491,7 @@ public class Main {
     }
 
     public static void mostraMensagens() throws SQLException, ClassNotFoundException, SelectException {
-        System.out.println("Id - Usuário - Texto - Data/Hora - Entregue - Visualizado - Post - Midia");
+        System.out.println("Id - Usuário - Texto - Data/Hora - Post - Midia");
         for (Mensagem mensagem : sistema.mostraMensagens()) {
             System.out.println(mensagem);
         }
@@ -482,6 +511,9 @@ public class Main {
         mostraConversas();
         System.out.println("Digite o ID da conversa a ser excluída:");
         int id_conversa = Integer.parseInt(scan.nextLine());
+        for(int i : sistema.mensagensConversa(id_conversa)){
+            sistema.removeMensagem(i);
+        }
         sistema.removeConversa(id_conversa);
     }
 

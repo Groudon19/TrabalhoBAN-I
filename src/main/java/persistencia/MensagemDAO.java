@@ -21,8 +21,9 @@ public class MensagemDAO {
 
     private MensagemDAO() throws ClassNotFoundException, SQLException {
         Connection conexao = Conexao.getConexao();
-        insert = conexao.prepareStatement("INSERT INTO mensagem (data_hora, texto, id_usuario, id_post, id_midia, entregue, visualizado) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        delete = conexao.prepareStatement("DELETE FROM mensagem WHERE id_mensagem = ?");
+        insert = conexao.prepareStatement("INSERT INTO mensagem (data_hora, texto, id_usuario, id_post, id_midia, entregue, visualizado) VALUES    (?, ?, ?, ?, ?, ?, ?)");
+        delete = conexao.prepareStatement("DELETE FROM recebe WHERE id_mensagem = ?;\n" + 
+                                          "DELETE FROM mensagem WHERE id_mensagem = ?");
         show = conexao.prepareStatement("SELECT * FROM mensagem");
         receive = conexao.prepareStatement("INSERT INTO recebe (id_conversa, id_mensagem) VALUES (?, (SELECT MAX(id_mensagem) FROM mensagem))");
     }
@@ -74,6 +75,7 @@ public class MensagemDAO {
                 new MensagemDAO();
             }
             delete.setInt(1, id);
+             delete.setInt(2, id);
             delete.executeUpdate();
         } catch (SQLException e) {
             throw new DeleteException( "Erro ao deletar mensagem");
