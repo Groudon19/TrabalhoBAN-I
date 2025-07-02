@@ -102,16 +102,18 @@ public class MensagemDAO {
 
                 mensagem.setId_usuario(rs.getInt("id_usuario"));
 
+                int aux = rs.getInt("id_post");
                 if(rs.wasNull()) {
                     mensagem.setId_post(0);
                 } else {
                     mensagem.setId_post(rs.getInt("id_post"));
                 }
 
+                aux = rs.getInt("id_midia");
                 if(rs.wasNull()) {
                     mensagem.setId_midia(0);
                 } else {
-                    mensagem.setId_midia(rs.getInt("id_midia"));
+                    mensagem.setId_midia(aux);
                 }
 
                 mensagem.setEntregue(rs.getBoolean("entregue"));

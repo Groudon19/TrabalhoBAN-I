@@ -41,6 +41,11 @@ public class Main {
                             case 1:
                                 System.out.println("Entrar");
                                 Usuario usuario = login(sistema);
+                                if(usuario.getEmail() == null){
+                                    System.out.println("Usuario nao encontrado");
+                                    break;
+                                }
+                                int id_usuario = usuario.getId_usuario();
                                 System.out.println("Login de " + usuario.getNome() + " feito com sucesso");
                                 int opcaoPrincipal = -1;
                                 do{
@@ -55,13 +60,13 @@ public class Main {
                                                         mostraPosts();
                                                         break;
                                                     case 2:
-                                                        curtePost(usuario.getId_usuario());
+                                                        curtePost(id_usuario);
                                                         break;
                                                     case 3:
-                                                        comentaPost(usuario.getId_usuario());
+                                                        comentaPost(id_usuario);
                                                         break;
                                                     case 4:
-                                                        segueUsuario(usuario.getId_usuario());
+                                                        segueUsuario(id_usuario);
                                                         break;
                                                     case 0: 
                                                         System.out.println("Voltando ao menu principal...");
@@ -73,7 +78,86 @@ public class Main {
                                             }while(opcaoFeed != 0);
                                             break;
                                         case 2:
-                                            curtePost(usuario.getId_usuario());
+                                            int opcaoPerfil = -1;
+                                            do{
+                                                opcaoPerfil = perfil(scan);
+                                                switch(opcaoPerfil){
+                                                    case 1:
+                                                        mostraPostsUsuario(id_usuario);
+                                                        break;
+                                                    case 2:
+                                                        publicaPostUsuario(sistema, id_usuario);
+                                                        break;
+                                                    case 3:
+                                                        mostraPostsUsuario(id_usuario);
+                                                        deletePost(); // arriscado
+                                                        break;
+                                                    case 4:
+                                                        deleteUsuario(id_usuario);
+                                                        break;
+                                                    case 0: 
+                                                        System.out.println("Voltando ao menu principal...");
+                                                        break; 
+                                                    default:
+                                                        System.out.println("Opção inválida! Tente novamente.");
+                                                        break;
+                                                }
+                                            }while(opcaoPerfil != 0);
+                                            break;
+                                        case 3:
+                                            int opcaoChat = -1;
+                                            do{
+                                                opcaoChat = chat(scan);
+                                                switch (opcaoChat) {
+                                                    case 1:
+                                                        mostraConversasUsuario(id_usuario);
+                                                        break;
+                                                    case 2:
+                                                        mostraConversasUsuario(id_usuario);
+                                                        System.out.println("Digite o ID da conversa: ");
+                                                        int id_conversa = Integer.parseInt(scan.nextLine());
+                                                        if(sistema.checkParticipation(id_conversa, id_usuario) == false){
+                                                            System.out.println("Conversa inexistente");
+                                                            break;
+                                                        }
+                                                        int opcaoAcessaConversa = -1;
+                                                        do{
+                                                            opcaoAcessaConversa = acessaConversa(scan, id_conversa);
+                                                            switch (opcaoAcessaConversa) {
+                                                                case 1:
+                                                                    mostraConteudoDaConversa(id_conversa);
+                                                                    break;
+                                                                case 2:
+                                                                    mandaMensagem(id_usuario, id_conversa);
+                                                                    break;
+                                                                case 3:
+                                                                    mostraMensagensUsuario(id_conversa, id_usuario);
+                                                                    removeMensagem();
+                                                                    break;
+                                                                case 4:
+                                                                    adicionarUsuarioNaConversa(id_conversa);
+                                                                    break;
+                                                                case 0: 
+                                                                    System.out.println("Voltando ao menu principal...");
+                                                                    break; 
+                                                                default:
+                                                                    System.out.println("Opção inválida! Tente novamente.");
+                                                                    break;
+                                                            }
+                                                        }while(opcaoAcessaConversa != 0);
+
+                                                        break;
+                                                    case 3:
+                                                        criaConversaUsuario(id_usuario);
+                                                        break;
+                                                    case 4:
+                                                        mostraConversasUsuario(id_usuario);
+                                                        removeConversa();
+                                                        break;
+                                                    default:
+                                                        break;
+                                                }
+                                            }while(opcaoChat != 0);
                                             break;
                                         case 0: 
                                             System.out.println("Voltando ao menu principal...");
@@ -118,7 +202,7 @@ public class Main {
                                             break;
                                         case 3:
                                             System.out.println("Excluir Usuário");
-                                            deleteUsuario();
+                                            deleteUsuarioAdmin();
                                             break;
                                         case 4:
                                             System.out.println("Mostra seguidores do Usuario mais seguido");
@@ -147,6 +231,7 @@ public class Main {
                                             break;
                                         case 3:
                                             System.out.println("Excluir Post");
+                                            mostraPosts();
                                             deletePost();
                                             break;
                                         case 0:
@@ -189,7 +274,7 @@ public class Main {
                                     switch (opcaoMensagem) {
                                         case 1:
                                             System.out.println("Mandar Mensagem");
-                                            mandaMensagem();
+                                            mandaMensagemAdmin();
                                             break;
                                         case 2:
                                             System.out.println("Mostrar Mensagens");
@@ -197,6 +282,7 @@ public class Main {
                                             break;
                                         case 3:
                                             System.out.println("Excluir Mensagem");
+                                            mostraMensagens();
                                             removeMensagem();
                                             break;
                                         case 0:
@@ -222,15 +308,8 @@ public class Main {
                                             break;
                                         case 3:
                                             System.out.println("Excluir Conversa");
+                                            mostraConversas();
                                             removeConversa();
-                                            break;
-                                        case 4:
-                                            System.out.println("Mostrar uma Conversa");
-                                            mostraConteudoDaConversa();
-                                            break;
-                                        case 5:
-                                            System.out.println("Adicionar um Usuário na Conversa");
-                                            adicionarUsuarioNaConversa();
                                             break;
                                         case 0:
                                             System.out.println("Voltando ao menu de Administrador...");
@@ -312,35 +391,36 @@ public class Main {
         return Integer.parseInt(scan.nextLine());
     }
 
-    public static int menu(Scanner scan){
-        //feed
-        System.out.println("-------- Login --------");
-        System.out.println("1 - Mostrar Posts"); //todos
-        System.out.println("2 - Curtir um Post");
-        System.out.println("3 - Fazer um comentario");
-        System.out.println("4 - Seguir Usuario");
-        
-        //perfil
-        System.out.println("1 - Mostrar Posts"); //apenas o proprio
-        System.out.println("2 - Publicar Post"); //cuidado ao ter midia no post
-        System.out.println("3 - Excluir Post");
+    public static int perfil(Scanner scan){
+        System.out.println("-------- Perfil --------");
+        System.out.println("1 - Mostrar seus Posts");
+        System.out.println("2 - Publicar um Post");
+        System.out.println("3 - Excluir um Post");
         System.out.println("4 - Excluir Conta");
+        System.out.println("0 - Voltar");
+        System.out.print("Sua opção: ");
+        return Integer.parseInt(scan.nextLine());
+    }
 
-
-        //chat
+    public static int chat(Scanner scan){
+        System.out.println("-------- Chat --------");
         System.out.println("1 - Mostrar Conversas");
-        System.out.println("2 - Acessar conversa");
-        //dentro do acessar
-        System.out.println("1 - Mostrar conteudo de uma conversa");
-        System.out.println("2 - Enviar Mensagem");
+        System.out.println("2 - Acessar Conversa");
+        System.out.println("3 - Nova Conversa");
+        System.out.println("4 - Remover Conversa");
+        System.out.println("0 - Voltar");
+        System.out.print("Sua opção: ");
+        return Integer.parseInt(scan.nextLine());
+    }
+
+    public static int acessaConversa(Scanner scan, int conversa){
+        System.out.println("------------------------");
+        System.out.println("1 - Mostrar conversa");
+        System.out.println("2 - Mandar Mensagem");
         System.out.println("3 - Excluir Mensagem");
-        System.out.println("4 - Adicionar Usuário a uma conversa");
-
-        //chat
-        System.out.println("3 - Cadastrar Conversa");
-        System.out.println("4 - Excluir Conversa");
-        
-
+        System.out.println("4 - Adicionar Usuario numa conversa");
+        System.out.println("0 - Voltar");
+        System.out.print("Sua opção: ");
         return Integer.parseInt(scan.nextLine());
     }
 
@@ -390,8 +470,6 @@ public class Main {
         System.out.println("1 - Cadastrar Conversa");
         System.out.println("2 - Mostrar Conversas");
         System.out.println("3 - Excluir Conversa");
-        System.out.println("4 - Mostrar conteudo de uma conversa");
-        System.out.println("5 - Adicionar Usuário a uma conversa");
         System.out.println("0 - Voltar ao Menu Principal");
         System.out.print("Sua opção: ");
         return Integer.parseInt(scan.nextLine());
@@ -466,19 +544,26 @@ public class Main {
         sistema.curtePost(id_post, id_usuario);
     }
 
-    public static void deleteUsuario() throws SQLException, ClassNotFoundException, DeleteException, SelectException {
-         try{
+    public static void deleteUsuarioAdmin()throws SQLException, ClassNotFoundException, DeleteException, SelectException {
+        try{
             mostraUsuarios();
             System.out.println("Digite o ID do usuário a ser excluído:");
             int id = Integer.parseInt(scan.nextLine());
-            for(int i : sistema.removePostUsuario(id)){
+            deleteUsuario(id);
+        }catch(SQLException e){
+            throw new DeleteException("Erro ao deletar usuario");
+        }
+    }    
+
+    public static void deleteUsuario(int id_usuario) throws SQLException, ClassNotFoundException, DeleteException, SelectException {
+         try{
+            for(int i : sistema.removePostUsuario(id_usuario)){
                 
                 sistema.removePost(i);
-                // System.out.println(i);
             }
-            sistema.removeUsuario(id);
+            sistema.removeUsuario(id_usuario);
          }catch(SQLException e){
-            throw new DeleteException("Erro ao deletar usuario");
+            throw new DeleteException("Erro ao excluir seu usuario");
          }
     }
 
@@ -501,8 +586,27 @@ public class Main {
         sistema.possuir(id_midia);
     }
 
+    public static void publicaPostUsuario(Sistema sistema, int id_usuario) throws SQLException, ClassNotFoundException, SelectException, InsertException {
+        Post post = new Post();
+        System.out.println("Deseja Carregar uma nova midia? (1 - Sim | 2 - Nao)");
+        if(Integer.parseInt(scan.nextLine()) == 1){
+            publicaMidia(sistema);
+        }
+        mostraMidias();
+        System.out.println("Digite o ID da mídia: ");
+        int id_midia = Integer.parseInt(scan.nextLine());
+        System.out.println("Digite a legenda do post (opcional): ");
+        String legenda = scan.nextLine();
+
+        post.setId_usuario(id_usuario);
+        post.setData_hora(new Timestamp(System.currentTimeMillis()));
+        post.setLegenda(legenda);
+
+        sistema.inserePost(post);
+        sistema.possuir(id_midia);
+    }
+
     public static void deletePost() throws SQLException, ClassNotFoundException, DeleteException, SelectException {
-        mostraPosts();
         System.out.println("Digite o ID do post a ser excluído:");
         int id = Integer.parseInt(scan.nextLine());
         sistema.removePost(id);
@@ -511,6 +615,13 @@ public class Main {
     public static void mostraPosts() throws SQLException, ClassNotFoundException, SelectException {
         System.out.println("Id - Usuario - Data/Hora - Legenda");
         for (Post post : sistema.mostraPosts()) {
+            System.out.println(post);
+        }
+    }
+
+    public static void mostraPostsUsuario(int id_usuario) throws SQLException, ClassNotFoundException, SelectException {
+        System.out.println("Id - Usuario - Data/Hora - Legenda");
+        for (Post post : sistema.buscaPostsUsuario(id_usuario)){
             System.out.println(post);
         }
     }
@@ -550,7 +661,56 @@ public class Main {
         }
     }
 
-    public static void mandaMensagem() throws SQLException, ClassNotFoundException, InsertException, SelectException {
+    public static void mandaMensagem(int id_usuario, int id_conversa) throws SQLException, ClassNotFoundException, InsertException, SelectException {
+        try {    
+            Mensagem mensagem = new Mensagem();
+
+            if(sistema.checkParticipation(id_conversa, id_usuario) == false){
+                return;
+            }
+
+            int id_post = 0;
+            int id_midia = 0;
+            mostraPosts();
+            System.out.println("Digite o ID do post relacionado (opcional):");
+            String id_post_input = scan.nextLine();
+            if (!id_post_input.isEmpty()) {
+                id_post = Integer.parseInt(id_post_input);
+            }
+
+            if(id_post == 0){
+                mostraMidias();
+                System.out.println("Digite o ID da mídia relacionada (opcional):");
+                String id_midia_input = scan.nextLine();
+                if (!id_midia_input.isEmpty()) {
+                    id_midia = Integer.parseInt(id_midia_input);
+                }
+            }
+
+            String texto = "";
+            do{
+                System.out.println("Digite o texto da mensagem:");
+                texto = scan.nextLine();
+            }while(id_post == 0 && id_midia == 0 && texto.isEmpty());
+
+            Timestamp data_hora = new Timestamp(System.currentTimeMillis());
+
+            mensagem.setId_usuario(id_usuario);
+            mensagem.setId_post(id_post);
+            mensagem.setId_midia(id_midia);
+            mensagem.setTexto(texto);
+            mensagem.setData_hora(data_hora);
+            mensagem.setEntregue(true);
+            mensagem.setVisualizado(false);
+
+            sistema.insereMensagem(mensagem);
+            sistema.recebeMensagem(id_conversa); // recebe a mensagem mais recente
+        }catch(SQLException e){
+            throw new InsertException("Erro ao enviar mensagem");
+        }
+    }
+
+    public static void mandaMensagemAdmin() throws SQLException, ClassNotFoundException, InsertException, SelectException {
         try {    
             Mensagem mensagem = new Mensagem();
             System.out.println("Digite o ID do usuário que está enviando a mensagem:");
@@ -560,8 +720,13 @@ public class Main {
             System.out.println("Digite o ID da conversa:");
             int id_conversa = Integer.parseInt(scan.nextLine());
 
+            if(sistema.checkParticipation(id_conversa, id_usuario) == false){
+                return;
+            }
+
             int id_post = 0;
             int id_midia = 0;
+            mostraPosts();
             System.out.println("Digite o ID do post relacionado (opcional):");
             String id_post_input = scan.nextLine();
             if (!id_post_input.isEmpty()) {
@@ -569,6 +734,7 @@ public class Main {
             }
 
             if(id_post == 0){
+                mostraMidias();
                 System.out.println("Digite o ID da mídia relacionada (opcional):");
                 String id_midia_input = scan.nextLine();
                 if (!id_midia_input.isEmpty()) {
@@ -600,7 +766,6 @@ public class Main {
     }
 
     public static void removeMensagem() throws SQLException, ClassNotFoundException, DeleteException, SelectException {
-        mostraMensagens();
         System.out.println("Digite o ID da mensagem a ser excluída:");
         int id_mensagem = Integer.parseInt(scan.nextLine());
         sistema.removeMensagem(id_mensagem);
@@ -623,8 +788,12 @@ public class Main {
         sistema.insereConversa(nomeConversa);
     }
 
+    public static void criaConversaUsuario(int id_usuario) throws SQLException, ClassNotFoundException, InsertException, SelectException {
+        criaConversa();
+        sistema.insereConversaUsuario(id_usuario);
+    }
+
     public static void removeConversa() throws SQLException, ClassNotFoundException, DeleteException, SelectException {
-        mostraConversas();
         System.out.println("Digite o ID da conversa a ser excluída:");
         int id_conversa = Integer.parseInt(scan.nextLine());
         for(int i : sistema.mensagensConversa(id_conversa)){
@@ -640,20 +809,28 @@ public class Main {
         }
     }
 
-    public static void mostraConteudoDaConversa() throws SQLException, ClassNotFoundException, SelectException{
-        mostraConversas();
-        System.out.println("Digite o ID da conversa:");
-        int id_conversa = Integer.parseInt(scan.nextLine());
+    public static void mostraConversasUsuario(int id_usuario) throws SQLException, ClassNotFoundException, SelectException {
+        System.out.println("Id - Nome");
+        for (Conversa conversa : sistema.mostraConversasUsuario(id_usuario)) {
+            System.out.println(conversa);
+        }
+    }
+
+    public static void mostraConteudoDaConversa(int id_conversa) throws SQLException, ClassNotFoundException, SelectException{
         
         for(Mensagem m : sistema.mostraConteudoDaConversa(id_conversa)){
             System.out.println(m);
         }
     }
 
-    public static void adicionarUsuarioNaConversa() throws SQLException, ClassNotFoundException, InsertException, SelectException {
-        mostraConversas();
-        System.out.println("Digite o ID da conversa:");
-        int id_conversa = Integer.parseInt(scan.nextLine());
+    public static void mostraMensagensUsuario(int id_conversa, int id_usuario) throws SQLException, ClassNotFoundException, SelectException{
+        
+        for(Mensagem m : sistema.userMessages(id_conversa, id_usuario)){
+            System.out.println(m);
+        }
+    }
+
+    public static void adicionarUsuarioNaConversa(int id_conversa) throws SQLException, ClassNotFoundException, InsertException, SelectException {
         mostraUsuarios();
         System.out.println("Digite o ID do usuário que quer adicionar:");
         int id_usuario = Integer.parseInt(scan.nextLine());

@@ -22,6 +22,7 @@ public class PostDAO {
     private PreparedStatement show;
     private PreparedStatement comment;
     private PreparedStatement possui;
+    private PreparedStatement postsIdUsuario;
     private PreparedStatement postsUsuario;
 
     private PostDAO() throws ClassNotFoundException, SQLException {
@@ -39,7 +40,8 @@ public class PostDAO {
         show = conexao.prepareStatement("SELECT * FROM post");
         comment = conexao.prepareStatement("INSERT INTO comenta (id_post, id_usuario, texto, dataHora) VALUES (?, ?, ?, ?)");
         possui = conexao.prepareStatement("INSERT INTO possui (id_post, id_midia) VALUES ((SELECT MAX(id_post) FROM post), ?)");
-        postsUsuario = conexao.prepareStatement("SELECT id_post FROM post WHERE id_usuario = ?");
+        postsIdUsuario = conexao.prepareStatement("SELECT id_post FROM post WHERE id_usuario = ?");
+        postsUsuario = conexao.prepareStatement("SELECT * FROM post WHERE id_usuario = ?");
 
     }
 
@@ -144,13 +146,13 @@ public class PostDAO {
 
     public List<Integer> removePostsUsuario(int id_usuario)throws SQLException, ClassNotFoundException, SelectException{
         try{
-            if(postsUsuario == null){
+            if(postsIdUsuario == null){
                 new PostDAO();
             }
-            postsUsuario.setInt(1, id_usuario);
-            postsUsuario.executeQuery();
+            postsIdUsuario.setInt(1, id_usuario);
+            postsIdUsuario.executeQuery();
             List<Integer> posts = new ArrayList<Integer>();
-            ResultSet rs = postsUsuario.getResultSet();
+            ResultSet rs = postsIdUsuario.getResultSet();
             while(rs.next()){
                 posts.add(rs.getInt("id_post"));
             }
@@ -159,6 +161,33 @@ public class PostDAO {
 
         }catch (SQLException e){
             throw new SelectException("Erro ao remover posts do usuario");
+        }
+    }
+
+    public List<Post> showPostsUsuario(int id_usuario) throws SQLException, ClassNotFoundException, SelectException {
+        try{
+            if(postsUsuario == null){
+                new PostDAO();
+            }
+            postsUsuario.setInt(1, id_usuario);
+            postsUsuario.executeQuery();
+            List<Post> posts = new LinkedList<Post>();
+            ResultSet rs = postsUsuario.getResultSet();
+            while(rs.next()){
+                Post post = new Post();
+                post.setId_post(rs.getInt("id_post"));
+                post.setId_usuario(rs.getInt("id_usuario"));
+                post.setData_hora(rs.getTimestamp("data_hora"));
+                if(rs.getString("legenda") != null) {
+                    post.setLegenda(rs.getString("legenda"));
+                } else {
+                    post.setLegenda("[null]");
+                }
+                posts.add(post);
+            }
+            return posts;
+        }catch(SQLException e){
+            throw new SelectException("Erro ao buscar posts do usuario");
         }
     }
 

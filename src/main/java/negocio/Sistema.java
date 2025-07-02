@@ -80,6 +80,10 @@ public class Sistema {
         return postDAO.show();
     }
 
+    public List<Post> buscaPostsUsuario(int id_usuario) throws SQLException, ClassNotFoundException, SelectException {
+        return postDAO.showPostsUsuario(id_usuario);
+    }
+
     public void insereMidia(Midia midia) throws SQLException, ClassNotFoundException, InsertException {
         midiaDAO.insert(midia);
     }
@@ -112,6 +116,10 @@ public class Sistema {
         conversaDAO.inserirConversa(nomeConversa);
     }
 
+    public void insereConversaUsuario(int id_usuario) throws SQLException, ClassNotFoundException, InsertException, SelectException {
+        conversaDAO.criaConversaUsuario(id_usuario);
+    }
+
     public void removeConversa(int id) throws SQLException, ClassNotFoundException, DeleteException {
         conversaDAO.deleteConversa(id);
     }
@@ -124,12 +132,24 @@ public class Sistema {
         return conversaDAO.show();
     }
 
+    public List<Conversa> mostraConversasUsuario(int id_usuario) throws SQLException, ClassNotFoundException, SelectException {
+        return conversaDAO.showConversasUsuario(id_usuario);
+    }
+
     public List<Mensagem> mostraConteudoDaConversa(int id_conversa) throws SQLException, ClassNotFoundException, SelectException {
         return conversaDAO.showConversa(id_conversa);
     }
 
+    public List<Mensagem> userMessages(int id_conversa, int id_mensagem) throws SQLException, ClassNotFoundException, SelectException {
+        return conversaDAO.mensagemsUsuario(id_conversa, id_mensagem);
+    }
+
     public void participarConversa(int id_conversa, int id_usuario) throws SQLException, ClassNotFoundException, InsertException {
         conversaDAO.participa(id_conversa, id_usuario);
+    }
+
+    public boolean checkParticipation(int id_conversa, int id_usuario) throws SQLException, ClassNotFoundException, SelectException {
+        return conversaDAO.verificaParticipacao(id_conversa, id_usuario);
     }
 
     public void comentar(int id_post, int id_usuario, String texto, Timestamp dataHora) throws SQLException, ClassNotFoundException, InsertException{
