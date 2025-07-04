@@ -569,10 +569,10 @@ public class Main {
 
     public static void publicaPost(Sistema sistema) throws SQLException, ClassNotFoundException, InsertException, SelectException {
         Post post = new Post();
-        mostraUsuarios();
+        // mostraUsuarios();
         System.out.println("Digite o ID do usuário que está publicando:");
         int id_usuario = Integer.parseInt(scan.nextLine());
-        mostraMidias();
+        // mostraMidias();
         System.out.println("Digite o ID da midia:");
         int id_midia = Integer.parseInt(scan.nextLine());
         System.out.println("Digite a legenda do post (opcional):");

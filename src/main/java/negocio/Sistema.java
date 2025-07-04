@@ -55,6 +55,10 @@ public class Sistema {
     public void curtePost(int id_post, int id_usuario) throws SQLException, ClassNotFoundException, InsertException {
         usuarioDAO.like(id_post, id_usuario);
     }
+    
+    public void comentar(int id_post, int id_usuario, String texto, Timestamp dataHora) throws SQLException, ClassNotFoundException, InsertException{
+        postDAO.comment(id_post, id_usuario, texto, dataHora);
+    }
 
     public Usuario login(String email, String senha) throws SQLException, ClassNotFoundException, SelectException {
         return usuarioDAO.login(email, senha);
@@ -140,8 +144,8 @@ public class Sistema {
         return conversaDAO.showConversa(id_conversa);
     }
 
-    public List<Mensagem> userMessages(int id_conversa, int id_mensagem) throws SQLException, ClassNotFoundException, SelectException {
-        return conversaDAO.mensagemsUsuario(id_conversa, id_mensagem);
+    public List<Mensagem> userMessages(int id_conversa, int id_usuario) throws SQLException, ClassNotFoundException, SelectException {
+        return conversaDAO.mensagensUsuario(id_conversa, id_usuario);
     }
 
     public void participarConversa(int id_conversa, int id_usuario) throws SQLException, ClassNotFoundException, InsertException {
@@ -152,9 +156,6 @@ public class Sistema {
         return conversaDAO.verificaParticipacao(id_conversa, id_usuario);
     }
 
-    public void comentar(int id_post, int id_usuario, String texto, Timestamp dataHora) throws SQLException, ClassNotFoundException, InsertException{
-        postDAO.comment(id_post, id_usuario, texto, dataHora);
-    }
 
     public void possuir(int id_midia) throws SQLException, ClassNotFoundException, InsertException{
         postDAO.possui(id_midia);

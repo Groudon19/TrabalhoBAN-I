@@ -20,6 +20,7 @@ public class Usuario {
         this.email = email;
         this.nome = nome;
         this.senha = senha;
+        this.descricao = "";
     }
 
     public Usuario(){

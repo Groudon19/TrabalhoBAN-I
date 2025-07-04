@@ -15,7 +15,8 @@ import excecoes.InsertException;
 import excecoes.SelectException;
 
 public class ConversaDAO {
-    private static ConversaDAO instancia;  
+    private static ConversaDAO instancia = null;  
+    
     private PreparedStatement insert;
     private PreparedStatement delete;
     private PreparedStatement show;
@@ -162,7 +163,7 @@ public class ConversaDAO {
         }
     }
 
-    public List<Mensagem> mensagemsUsuario(int id_conversa, int id_usuario) throws SQLException, ClassNotFoundException, SelectException {
+    public List<Mensagem> mensagensUsuario(int id_conversa, int id_usuario) throws SQLException, ClassNotFoundException, SelectException {
         try{
             if(userMessages == null){
                 new ConversaDAO();
