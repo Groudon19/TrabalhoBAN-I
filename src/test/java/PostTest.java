@@ -70,14 +70,6 @@ public class PostTest {
     }
 
     @Test
-    public void testEqualsObjetosIguais() {
-        Timestamp ts = Timestamp.valueOf("2024-06-05 17:00:00");
-        Post p1 = new Post(9, 10, ts, "Legenda igual");
-        Post p2 = new Post(9, 11, ts, "Outra legenda");
-        assertEquals(p1, p2); // Só compara id_post
-    }
-
-    @Test
     public void testEqualsObjetosDiferentes() {
         Timestamp ts = Timestamp.valueOf("2024-06-06 18:00:00");
         Post p1 = new Post(11, 12, ts, "Legenda 1");

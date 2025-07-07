@@ -30,7 +30,7 @@ public class PostDAO {
         insert = conexao.prepareStatement("INSERT INTO post (id_usuario, data_hora, legenda) VALUES (?, ?, ?)");
         delete = conexao.prepareStatement("UPDATE mensagem\n" +
                                           "SET id_post = NULL,\n" +
-                                          "\ttexto = 'Post excluido" +
+                                          "\ttexto = 'Post excluido " +
                                           "' || texto\n" +
                                           "WHERE id_post = ?;\n" +
                                           "DELETE FROM curte WHERE id_post = ?;\n" +

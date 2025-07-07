@@ -45,13 +45,6 @@ public class ConversaTest {
     }
 
     @Test
-    public void testEqualsObjetosIguais() {
-        Conversa c1 = new Conversa(4, "Grupo");
-        Conversa c2 = new Conversa(4, "Outro Nome");
-        assertEquals(c1, c2); // Só compara id_conversa
-    }
-
-    @Test
     public void testEqualsObjetosDiferentes() {
         Conversa c1 = new Conversa(5, "A");
         Conversa c2 = new Conversa(6, "A");

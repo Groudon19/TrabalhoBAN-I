@@ -63,24 +63,5 @@ public class Usuario {
         return id_usuario + " - " + nome + " - " + descricao;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Usuario other = (Usuario) obj;
-        if (id_usuario != other.id_usuario)
-            return false;
-        if (email == null) {
-            if (other.email != null)
-                return false;
-        } else if (!email.equals(other.email))
-            return false;
-        return true;
-    }
-
     
 }

@@ -61,19 +61,5 @@ public class Post {
         return id_post + " - " + id_usuario + " - " + data_hora + " - " + legenda;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Post other = (Post) obj;
-        if (id_post != other.id_post)
-            return false;
-        return true;
-    }
-
     
 }

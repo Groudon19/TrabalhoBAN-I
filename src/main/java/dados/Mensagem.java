@@ -91,21 +91,6 @@ public class Mensagem {
         this.visualizado = visualizado;
     }
 
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Mensagem other = (Mensagem) obj;
-        if (id_mensagem != other.id_mensagem)
-            return false;
-        return true;
-    }
-
     @Override
     public String toString() {
         if (id_post == 0 && id_midia == 0) {

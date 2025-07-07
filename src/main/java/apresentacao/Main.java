@@ -2,6 +2,7 @@ package apresentacao;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Scanner;
 
 import dados.Conversa;
@@ -92,9 +93,6 @@ public class Main {
                                                         mostraPostsUsuario(id_usuario);
                                                         deletePost(); // arriscado
                                                         break;
-                                                    case 4:
-                                                        deleteUsuario(id_usuario);
-                                                        break;
                                                     case 0: 
                                                         System.out.println("Voltando ao menu principal...");
                                                         break; 
@@ -159,6 +157,9 @@ public class Main {
                                                 }
                                             }while(opcaoChat != 0);
                                             break;
+                                        case 4:
+                                            deleteUsuario(id_usuario);
+                                            break;
                                         case 0: 
                                             System.out.println("Voltando ao menu principal...");
                                             break; 
@@ -166,7 +167,7 @@ public class Main {
                                             System.out.println("Opção inválida! Tente novamente.");
                                             break; 
                                     }
-                                }while(opcaoPrincipal != 0);
+                                }while(opcaoPrincipal != 0 && opcaoPrincipal != 4);
                                 break; 
                             case 2: 
                                 System.out.println("Cadastrar");
@@ -375,6 +376,7 @@ public class Main {
         System.out.println("1 - Feed");
         System.out.println("2 - Perfil");
         System.out.println("3 - Chat");
+        System.out.println("4 - Excluir Conta");
         System.out.println("0 - Sair");
         System.out.print("Sua opção: ");
         return Integer.parseInt(scan.nextLine());
@@ -396,7 +398,6 @@ public class Main {
         System.out.println("1 - Mostrar seus Posts");
         System.out.println("2 - Publicar um Post");
         System.out.println("3 - Excluir um Post");
-        System.out.println("4 - Excluir Conta");
         System.out.println("0 - Voltar");
         System.out.print("Sua opção: ");
         return Integer.parseInt(scan.nextLine());
@@ -523,11 +524,12 @@ public class Main {
 
     public static void segueUsuario(int id_seguidor)throws SQLException, ClassNotFoundException, InsertException, SelectException {
         int id_seguido = 0;
-        do{
-            mostraUsuarios();
-            System.out.println("Digite o ID do usuario que quer seguir:");
-            id_seguido = Integer.parseInt(scan.nextLine());
-        }while(id_seguidor == id_seguido || id_seguidor == 0 || id_seguido == 0);
+        mostraUsuarios();
+        System.out.println("Digite o ID do usuario que quer seguir:");
+        id_seguido = Integer.parseInt(scan.nextLine());
+        if(id_seguidor == id_seguido){
+            throw new InsertException("Erro: Impossivel seguir a propria conta");
+        }
 
         sistema.segueUsuario(id_seguidor, id_seguido);
     }
@@ -535,12 +537,10 @@ public class Main {
     public static void curtePost(int id_usuario) throws SQLException, ClassNotFoundException, InsertException, SelectException {
         int id_post = 0;
 
-        do{
-            mostraPosts();
-            System.out.println("Digite o ID do post que quer curtir:");
-            id_post = Integer.parseInt(scan.nextLine());
-        }while(id_usuario <= 0 || id_post <= 0);
-
+        mostraPosts();
+        System.out.println("Digite o ID do post que quer curtir:");
+        id_post = Integer.parseInt(scan.nextLine());
+        
         sistema.curtePost(id_post, id_usuario);
     }
 
@@ -569,12 +569,25 @@ public class Main {
 
     public static void publicaPost(Sistema sistema) throws SQLException, ClassNotFoundException, InsertException, SelectException {
         Post post = new Post();
-        // mostraUsuarios();
+        mostraUsuarios();
         System.out.println("Digite o ID do usuário que está publicando:");
         int id_usuario = Integer.parseInt(scan.nextLine());
-        // mostraMidias();
+        mostraMidias();
         System.out.println("Digite o ID da midia:");
         int id_midia = Integer.parseInt(scan.nextLine());
+        List<Midia> aux = sistema.mostraMidias();
+        int cont = 0;
+        for(Midia midia : aux){
+            if(id_midia == midia.getId_midia()){
+                break;
+            }
+            else{
+                cont++;
+                if(cont == aux.size()){
+                    throw new InsertException("Midia nao encontrada");
+                }
+            }
+        }
         System.out.println("Digite a legenda do post (opcional):");
         String legenda = scan.nextLine();
 
@@ -595,6 +608,19 @@ public class Main {
         mostraMidias();
         System.out.println("Digite o ID da mídia: ");
         int id_midia = Integer.parseInt(scan.nextLine());
+        List<Midia> aux = sistema.mostraMidias();
+        int cont = 0;
+        for(Midia midia : aux){
+            if(id_midia == midia.getId_midia()){
+                break;
+            }
+            else{
+                cont++;
+                if(cont == aux.size()){
+                    throw new InsertException("Midia nao encontrada");
+                }
+            }
+        }
         System.out.println("Digite a legenda do post (opcional): ");
         String legenda = scan.nextLine();
 
@@ -666,7 +692,7 @@ public class Main {
             Mensagem mensagem = new Mensagem();
 
             if(sistema.checkParticipation(id_conversa, id_usuario) == false){
-                return;
+                throw new InsertException("Usuario fora da conversa");
             }
 
             int id_post = 0;
@@ -688,10 +714,12 @@ public class Main {
             }
 
             String texto = "";
-            do{
-                System.out.println("Digite o texto da mensagem:");
-                texto = scan.nextLine();
-            }while(id_post == 0 && id_midia == 0 && texto.isEmpty());
+            System.out.println("Digite o texto da mensagem:");
+            texto = scan.nextLine();
+
+            if(id_post == 0 && id_midia == 0 && texto.isEmpty()){
+                throw new InsertException("Mensagem sem nenhum parametro");
+            }
 
             Timestamp data_hora = new Timestamp(System.currentTimeMillis());
 
@@ -713,6 +741,7 @@ public class Main {
     public static void mandaMensagemAdmin() throws SQLException, ClassNotFoundException, InsertException, SelectException {
         try {    
             Mensagem mensagem = new Mensagem();
+            mostraUsuarios();
             System.out.println("Digite o ID do usuário que está enviando a mensagem:");
             int id_usuario = Integer.parseInt(scan.nextLine());
 
@@ -721,7 +750,7 @@ public class Main {
             int id_conversa = Integer.parseInt(scan.nextLine());
 
             if(sistema.checkParticipation(id_conversa, id_usuario) == false){
-                return;
+                throw new InsertException("Usuario nao esta na conversa");
             }
 
             int id_post = 0;
@@ -743,10 +772,12 @@ public class Main {
             }
 
             String texto = "";
-            do{
-                System.out.println("Digite o texto da mensagem:");
-                texto = scan.nextLine();
-            }while(id_post == 0 && id_midia == 0 && texto.isEmpty());
+            System.out.println("Digite o texto da mensagem:");
+            texto = scan.nextLine();
+
+            if(id_post == 0 && id_midia == 0 && texto.isEmpty()){
+                throw new InsertException("Mensagem sem nenhum parametro");
+            }
 
             Timestamp data_hora = new Timestamp(System.currentTimeMillis());
 
@@ -844,6 +875,9 @@ public class Main {
         int id_post = Integer.parseInt(scan.nextLine());
         System.out.println("Conteudo do comentario:");
         String texto = scan.nextLine();
+        if(texto.isEmpty()){
+            throw new InsertException("Comentário vazio inválido");
+        }
         Timestamp data_hora = new Timestamp(System.currentTimeMillis());
 
         sistema.comentar(id_post, id_usuario, texto, data_hora);

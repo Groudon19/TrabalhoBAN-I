@@ -77,13 +77,6 @@ public class UsuarioTest {
     }
 
     @Test
-    public void testEqualsObjetosIguais() {
-        Usuario u1 = new Usuario(1, "Joao", "joao@email.com", "senha", "desc");
-        Usuario u2 = new Usuario(1, "Joao", "joao@email.com", "senha", "desc");
-        assertEquals(u1, u2);
-    }
-
-    @Test
     public void testEqualsObjetosDiferentes() {
         Usuario u1 = new Usuario(1, "Joao", "joao@email.com", "senha", "desc");
         Usuario u2 = new Usuario(2, "Maria", "maria@email.com", "senha", "desc");

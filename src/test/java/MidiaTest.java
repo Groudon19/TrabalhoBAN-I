@@ -71,13 +71,6 @@ public class MidiaTest {
     }
 
     @Test
-    public void testEqualsObjetosIguais() {
-        Midia m1 = new Midia(6, 150, 2, 60);
-        Midia m2 = new Midia(6, 200, 1, 30);
-        assertEquals(m1, m2); // Só compara id_midia
-    }
-
-    @Test
     public void testEqualsObjetosDiferentes() {
         Midia m1 = new Midia(7, 100, 1);
         Midia m2 = new Midia(8, 100, 1);

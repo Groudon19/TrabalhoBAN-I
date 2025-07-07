@@ -107,15 +107,7 @@ public class MensagemTest {
         Mensagem msg = new Mensagem();
         assertEquals(msg, msg);
     }
-
-    @Test
-    public void testEqualsObjetosIguais() {
-        Timestamp ts = Timestamp.valueOf("2024-06-14 14:00:00");
-        Mensagem m1 = new Mensagem(10, ts, "A", 1, 2, 3, true, false);
-        Mensagem m2 = new Mensagem(10, ts, "B", 4, 5, 6, false, true);
-        assertEquals(m1, m2); // Só compara id_mensagem
-    }
-
+    
     @Test
     public void testEqualsObjetosDiferentes() {
         Mensagem m1 = new Mensagem();

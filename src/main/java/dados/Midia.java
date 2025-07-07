@@ -56,19 +56,5 @@ public class Midia {
         }
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Midia other = (Midia) obj;
-        if (id_midia != other.id_midia)
-            return false;
-        return true;
-    }
-
     
 }
